@@ -93,6 +93,25 @@ section {
   position: relative;
 }
 
+/* Сетка DESIGN-SYSTEM.md §4: 12 колонок ≥1024px, 8 колонок 768–1023px, 4 — <768px.
+   Без контейнера максимальной ширины: сетка тянется до краёв страницы. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--grid-gutter);
+  padding-inline: var(--grid-margin);
+}
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(8, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
 main {
   padding-top: var(--nav-height);
 }

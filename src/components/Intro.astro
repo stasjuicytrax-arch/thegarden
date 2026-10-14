@@ -1,0 +1,90 @@
+---
+import InlineCircle from './InlineCircle.astro';
+import ArrowLink from './ArrowLink.astro';
+import Marquee from './Marquee.astro';
+import manicurePhoto from '../../assets/old-site/06-works/03_IMG_8084.jpg';
+import hairPhoto from '../../assets/old-site/06-works/05_IMG_8090.JPG';
+import cosmetologyPhoto from '../../assets/old-site/06-works/06_IMG_8093.jpg';
+import massagePhoto from '../../assets/old-site/06-works/07_IMG_8099.jpg';
+
+const MARQUEE_TEXT = 'маникюр · педикюр · волосы · косметология · лазер · массаж · брови · RF-лифтинг ·';
+---
+
+<div class="intro">
+  <div class="grid">
+    <div class="intro__text">
+    <p class="intro__statement" data-intro-statement>
+      <span class="intro__piece" data-intro-piece>Мы создали комфортное пространство для отдыха и ухода за собой: маникюр</span><InlineCircle
+        src={manicurePhoto}
+        alt="Маникюр в студии The Garden"
+        position="50% 30%"
+      /><span class="intro__piece" data-intro-piece> волосы</span><InlineCircle
+        src={hairPhoto}
+        alt="Уход за волосами в студии The Garden"
+        position="70% 70%"
+      /><span class="intro__piece" data-intro-piece> косметология</span><InlineCircle
+        src={cosmetologyPhoto}
+        alt="Косметология в студии The Garden"
+        position="60% 70%"
+      /><span class="intro__piece" data-intro-piece> массаж</span><InlineCircle
+        src={massagePhoto}
+        alt="Массаж в студии The Garden"
+        position="35% 25%"
+      /><span class="intro__piece" data-intro-piece> — и всё это с любовью и заботой.</span>
+    </p>
+
+    <p class="intro__body t-body" data-intro-fade>
+      Оцените полный спектр услуг, познакомьтесь с командой опытных профессионалов и
+      почувствуйте, что именно в the Garden Вам всегда рады!
+    </p>
+
+    <ArrowLink href="#price" class="intro__link" data-intro-fade>Смотреть цены</ArrowLink>
+    </div>
+  </div>
+
+  <Marquee text={MARQUEE_TEXT} class="intro__marquee" />
+</div>
+
+<style>
+  .intro {
+    padding-top: var(--space-section);
+    padding-bottom: var(--space-9);
+  }
+
+  .intro__text {
+    grid-column: 1 / -1;
+    max-width: 56em;
+  }
+  @media (min-width: 1024px) {
+    .intro__text {
+      grid-column: 2 / 10;
+    }
+  }
+
+  .intro__statement {
+    font-family: var(--font-text);
+    font-weight: 400;
+    font-size: clamp(22px, 1.4rem + 1.4vw, 36px);
+    line-height: 1.35;
+    color: var(--color-plum);
+  }
+
+  .intro__body {
+    margin-top: var(--space-5);
+    color: var(--color-plum-2);
+    max-width: 34em;
+  }
+
+  .intro__link {
+    margin-top: var(--space-6);
+  }
+
+  .intro__marquee {
+    margin-top: var(--space-9);
+  }
+</style>
+
+<script>
+  import { initIntro } from '../scripts/intro';
+  initIntro();
+</script>

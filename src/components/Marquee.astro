@@ -1,0 +1,38 @@
+---
+// Бегущая лента-слово (DESIGN-SYSTEM.md §7.5). Максимум две на странице.
+interface Props {
+  text: string;
+  class?: string;
+}
+const { text, class: className } = Astro.props;
+---
+
+<div class:list={['marquee', className]} data-marquee aria-hidden="true">
+  <div class="marquee__track" data-marquee-track>
+    <span class="marquee__item t-marquee">{text}</span>
+    <span class="marquee__item t-marquee">{text}</span>
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    width: 100%;
+  }
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+  .marquee__item {
+    display: inline-flex;
+    white-space: nowrap;
+    color: var(--color-plum);
+    padding-right: 0.3em;
+  }
+</style>
+
+<script>
+  import { initMarquees } from '../scripts/marquee';
+  initMarquees();
+</script>

@@ -1,6 +1,7 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+import { Flip } from 'gsap/Flip';
 
 let registered = false;
 
@@ -11,7 +12,7 @@ export function prefersReducedMotion(): boolean {
 /** Регистрирует плагины GSAP один раз и выставляет общий бюджет анимации. */
 export function registerMotion(): typeof gsap {
   if (!registered) {
-    gsap.registerPlugin(ScrollTrigger, SplitText);
+    gsap.registerPlugin(ScrollTrigger, SplitText, Flip);
     if (prefersReducedMotion()) {
       gsap.globalTimeline.timeScale(100);
       ScrollTrigger.config({ limitCallbacks: true });
@@ -21,4 +22,4 @@ export function registerMotion(): typeof gsap {
   return gsap;
 }
 
-export { gsap, ScrollTrigger, SplitText };
+export { gsap, ScrollTrigger, SplitText, Flip };

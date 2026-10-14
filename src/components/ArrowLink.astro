@@ -1,0 +1,54 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  href: string;
+  class?: string;
+}
+const { href, class: className } = Astro.props;
+---
+
+<a href={href} class:list={['arrow-link', className]}>
+  <span class="arrow-link__label t-button"><slot /></span>
+  <span class="arrow-link__circle" aria-hidden="true">
+    <Icon name="arrow" size={20} />
+  </span>
+</a>
+
+<style>
+  .arrow-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-4);
+    color: var(--color-plum);
+  }
+
+  .arrow-link__circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: var(--radius-full);
+    background: var(--color-pearl-2);
+    color: var(--color-plum);
+    transition: transform var(--dur-xs) var(--ease-out);
+  }
+  @media (max-width: 767px) {
+    .arrow-link__circle {
+      width: 56px;
+      height: 56px;
+    }
+  }
+
+  .arrow-link:hover .arrow-link__circle {
+    transform: translate(2px, -2px) scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .arrow-link__circle {
+      transition: none;
+    }
+  }
+</style>

@@ -5,6 +5,7 @@ import MobileMenu from '../components/MobileMenu.astro';
 import BookingSheet from '../components/BookingSheet.astro';
 import Hero from '../components/Hero.astro';
 import StickyBookCta from '../components/StickyBookCta.astro';
+import Intro from '../components/Intro.astro';
 import '../styles/tokens.css';
 import '../styles/typography.css';
 import '../styles/base.css';
@@ -37,7 +38,9 @@ const description =
         <Hero />
       </section>
 
-      <section id="about" aria-label="О студии"></section>
+      <section id="about" aria-label="О студии">
+        <Intro />
+      </section>
 
       <section id="sale" aria-label="Акции месяца"></section>
 

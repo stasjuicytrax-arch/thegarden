@@ -1,0 +1,37 @@
+---
+// «Цветок в строке» (DESIGN-SYSTEM.md §7.4): круглое фото высотой с заглавную
+// буквы строки, не ломает межстрочный интервал.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  position?: string;
+}
+const { src, alt, position = '50% 50%' } = Astro.props;
+---
+
+<span class="inline-circle" data-reveal-circle>
+  <Image src={src} alt={alt} width={96} height={96} style={`object-position:${position}`} />
+</span>
+
+<style>
+  .inline-circle {
+    display: inline-block;
+    vertical-align: middle;
+    width: 0.75em;
+    height: 0.75em;
+    margin: 0 0.1em;
+    border-radius: 50%;
+    overflow: hidden;
+    transform: translateY(-0.08em);
+    clip-path: circle(75% at 50% 50%);
+  }
+  .inline-circle :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>
