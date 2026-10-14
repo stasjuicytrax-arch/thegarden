@@ -1,0 +1,160 @@
+{
+ "month": "2026-10",
+ "monthLabel": "октябрь 2026",
+ "note": "«all-month» = весь месяц; если студия не указана в dates — акция действует в студии, где есть услуга (уточнить у салона). Фото содержат вшитый текст — заменить чистыми исходниками.",
+ "promos": [
+  {
+   "id": "poleznaya-strizhka",
+   "discount": "−10%",
+   "title": "«Полезная» стрижка",
+   "note": "+ уход Dr.Sorbie",
+   "section": "Парикмахерский зал",
+   "image": "assets/old-site/02-promo/01__10.jpg",
+   "dates": {
+    "pushkin": [
+     1,
+     5,
+     6,
+     12,
+     15,
+     26,
+     27
+    ],
+    "frunzenskaya": [
+     1,
+     2,
+     13,
+     14,
+     19,
+     26
+    ]
+   }
+  },
+  {
+   "id": "botulinoterapiya",
+   "discount": "−10%",
+   "title": "Ботулинотерапия",
+   "note": "препарат «Ксеомин»",
+   "section": "Косметология",
+   "image": "assets/old-site/02-promo/02__10.jpg",
+   "dates": {
+    "pushkin": [
+     1,
+     20
+    ]
+   }
+  },
+  {
+   "id": "guby",
+   "discount": "−10%",
+   "title": "Увлажнение и увеличение губ",
+   "note": "",
+   "section": "Косметология",
+   "image": "assets/old-site/02-promo/03__10.jpg",
+   "dates": {
+    "pushkin": [
+     12
+    ]
+   }
+  },
+  {
+   "id": "nitevoy-lifting",
+   "discount": "−10%",
+   "title": "Нитевой лифтинг",
+   "note": "",
+   "section": "Косметология",
+   "image": "assets/old-site/02-promo/04__10.jpg",
+   "dates": {
+    "pushkin": [
+     8,
+     28
+    ]
+   }
+  },
+  {
+   "id": "lazer-vse-telo",
+   "discount": "−10%",
+   "title": "Лазерная эпиляция «Всё тело»",
+   "note": "",
+   "section": "Косметология",
+   "image": "assets/old-site/02-promo/05__10.jpg",
+   "dates": "all-month"
+  },
+  {
+   "id": "rf-igolchatyy",
+   "discount": "−15%",
+   "title": "RF-лифтинг «Игольчатый»",
+   "note": "",
+   "section": "Косметология",
+   "image": "assets/old-site/02-promo/06__10.jpg",
+   "dates": "all-month"
+  },
+  {
+   "id": "okrashivanie-odin-ton",
+   "discount": "−10%",
+   "title": "Окрашивание в один тон",
+   "note": "+ уход Dr.Sorbie",
+   "section": "Парикмахерский зал",
+   "image": "assets/old-site/02-promo/07_10.jpg",
+   "dates": {
+    "pushkin": [
+     1,
+     5,
+     6,
+     12,
+     15,
+     26,
+     27
+    ],
+    "frunzenskaya": [
+     1,
+     2,
+     13,
+     14,
+     19,
+     26
+    ]
+   }
+  },
+  {
+   "id": "manikyur-welcome",
+   "discount": "−15%",
+   "title": "Маникюр «Всё включено»",
+   "note": "welcome-скидка",
+   "section": "Маникюр",
+   "image": "assets/old-site/02-promo/08__10.jpg",
+   "dates": "all-month"
+  },
+  {
+   "id": "biorevitalizaciya-pdrn",
+   "discount": "−10%",
+   "title": "Биоревитализация",
+   "note": "препарат «PDRN»",
+   "section": "Косметология",
+   "image": "assets/old-site/02-promo/09__10.jpg",
+   "dates": {
+    "pushkin": [
+     5,
+     21
+    ]
+   }
+  }
+ ],
+ "seasonal": [
+  {
+   "title": "Стрижки",
+   "discount": "−15%",
+   "section": "Парикмахерский зал"
+  },
+  {
+   "title": "Окрашивание любой сложности",
+   "discount": "−10%",
+   "section": "Парикмахерский зал"
+  },
+  {
+   "title": "Ручной массаж",
+   "discount": "−15%",
+   "section": "Массаж"
+  }
+ ]
+}
