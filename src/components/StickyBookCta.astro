@@ -1,0 +1,31 @@
+---
+// TZ.md §5.1: кнопка «Записаться» на телефоне зафиксирована внизу экрана
+// и остаётся видимой на всех экранах сайта (не только в hero).
+import ButtonPrimary from './ButtonPrimary.astro';
+---
+
+<div class="sticky-cta">
+  <ButtonPrimary class="sticky-cta__btn" data-open-booking>Записаться</ButtonPrimary>
+</div>
+
+<style>
+  .sticky-cta {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    .sticky-cta {
+      display: block;
+      position: fixed;
+      left: var(--grid-margin);
+      right: var(--grid-margin);
+      bottom: var(--space-4);
+      z-index: 30;
+    }
+    .sticky-cta :global(.btn-primary) {
+      width: 100%;
+      height: 56px;
+      justify-content: center;
+    }
+  }
+</style>

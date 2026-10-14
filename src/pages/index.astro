@@ -3,6 +3,8 @@ import FontFaces from '../components/FontFaces.astro';
 import Header from '../components/Header.astro';
 import MobileMenu from '../components/MobileMenu.astro';
 import BookingSheet from '../components/BookingSheet.astro';
+import Hero from '../components/Hero.astro';
+import StickyBookCta from '../components/StickyBookCta.astro';
 import '../styles/tokens.css';
 import '../styles/typography.css';
 import '../styles/base.css';
@@ -28,9 +30,12 @@ const description =
     <Header />
     <MobileMenu />
     <BookingSheet />
+    <StickyBookCta />
 
     <main>
-      <section id="top" aria-label="Первый экран"></section>
+      <section id="top" aria-label="Первый экран">
+        <Hero />
+      </section>
 
       <section id="about" aria-label="О студии"></section>
 

@@ -1,0 +1,160 @@
+---
+import StudioSwitch from './StudioSwitch.astro';
+import ButtonPrimary from './ButtonPrimary.astro';
+import FlowerFallback from './FlowerFallback.astro';
+---
+
+<div class="hero" data-hero>
+  <div class="hero__field" aria-hidden="true"></div>
+
+  <h1 class="hero__title t-display">
+    <span class="hero__line-mask"><span class="line" data-hero-line>студия красоты</span></span>
+    <span class="hero__line-mask"><span class="line" data-hero-line>the garden</span></span>
+  </h1>
+
+  <div class="hero__flower" data-hero-flower aria-hidden="true">
+    <FlowerFallback />
+  </div>
+
+  <p class="hero__lead t-body" data-hero-fade>
+    Бьюти-услуги с любовью и заботой.<br />
+    Пушкин и Санкт-Петербург, ежедневно 10:00–21:00.
+  </p>
+
+  <div class="hero__actions" data-hero-fade>
+    <StudioSwitch />
+    <ButtonPrimary class="hero__cta" data-open-booking>Записаться</ButtonPrimary>
+  </div>
+</div>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: calc(100svh - var(--nav-height));
+    overflow: hidden;
+    display: grid;
+  }
+
+  .hero__field {
+    position: absolute;
+    top: 58%;
+    left: 50%;
+    width: 60vw;
+    height: 60vw;
+    max-width: 900px;
+    max-height: 900px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: var(--color-pearl);
+    transition: background-color var(--dur-md) var(--ease-in-out);
+  }
+  .hero[data-field='peony'] .hero__field {
+    background: var(--color-peony);
+  }
+
+  .hero__title {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    padding-top: var(--space-9);
+    text-align: center;
+  }
+
+  .hero__line-mask {
+    display: block;
+    overflow: hidden;
+  }
+  .hero__line-mask .line {
+    display: block;
+    transform: translateY(0);
+  }
+
+  .hero__flower {
+    position: absolute;
+    z-index: 1;
+    top: 30%;
+    left: 50%;
+    width: 44vw;
+    max-width: 640px;
+    aspect-ratio: 1;
+    transform: translate(-50%, -18%);
+  }
+
+  .hero__lead {
+    position: absolute;
+    z-index: 2;
+    left: var(--grid-margin);
+    bottom: 32px;
+    max-width: 280px;
+    color: var(--color-plum);
+  }
+
+  .hero__actions {
+    position: absolute;
+    z-index: 2;
+    right: var(--grid-margin);
+    bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 767px) {
+    .hero {
+      display: flex;
+      flex-direction: column;
+      min-height: auto;
+      padding-bottom: var(--space-9);
+    }
+    .hero__field {
+      top: 46%;
+      width: 110vw;
+      height: 110vw;
+    }
+    .hero__title {
+      padding-top: var(--space-7);
+    }
+    .hero__flower {
+      position: relative;
+      z-index: 1;
+      top: auto;
+      left: auto;
+      width: 92vw;
+      margin: var(--space-6) auto 0;
+      transform: none;
+    }
+    .hero__lead,
+    .hero__actions {
+      position: relative;
+      z-index: 2;
+      inset: auto;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      max-width: none;
+      padding-inline: var(--grid-margin);
+    }
+    .hero__lead {
+      margin-top: var(--space-6);
+    }
+    .hero__actions {
+      margin-top: var(--space-5);
+      justify-content: space-between;
+    }
+    /* Кнопка «Записаться» дублируется глобальной sticky-CTA (StickyBookCta) на мобильном. */
+    .hero__actions .hero__cta {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__field {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { initHero } from '../scripts/hero';
+  initHero();
+</script>

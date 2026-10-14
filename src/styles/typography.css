@@ -84,3 +84,14 @@
   line-height: 1;
   letter-spacing: -0.04em;
 }
+
+/* На телефоне display/heading-1 используют больший vw-коэффициент (DESIGN-SYSTEM.md §3:
+   "12vw → 17vw", "6.4vw → 11vw") — на десктопном clamp мобильная ширина даёт меньше. */
+@media (max-width: 767px) {
+  .t-display {
+    font-size: clamp(64px, 17vw, 220px);
+  }
+  .t-heading-1 {
+    font-size: clamp(40px, 11vw, 112px);
+  }
+}
