@@ -1,0 +1,28 @@
+{
+  "name": "the-garden",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^5.1.0",
+    "gsap": "^3.13.0",
+    "lenis": "^1.1.18"
+  },
+  "devDependencies": {
+    "@fontsource/jost": "^5.1.0",
+    "@fontsource/unbounded": "^5.1.0",
+    "typescript": "^5.7.0"
+  },
+  "allowScripts": {
+    "esbuild@0.27.7": true,
+    "esbuild@0.25.12": true,
+    "sharp@0.34.5": true
+  }
+}

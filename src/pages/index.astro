@@ -1,0 +1,58 @@
+---
+import FontFaces from '../components/FontFaces.astro';
+import '../styles/tokens.css';
+import '../styles/typography.css';
+import '../styles/base.css';
+
+const title = 'The Garden — студия красоты в Пушкине и на Фрунзенской';
+const description =
+  'Студия красоты The Garden: ногтевой сервис, имидж-студия, косметология, лазерная эпиляция, Brow Bar, массаж. Две студии — Пушкин и Фрунзенская. Запись онлайн.';
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <FontFaces />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+  <body>
+    <!-- Шапка + меню — состав и поведение собираются на Шаге 2 (TZ.md §4) -->
+    <header id="header"></header>
+
+    <main>
+      <section id="top" aria-label="Первый экран"></section>
+
+      <section id="about" aria-label="О студии"></section>
+
+      <section id="sale" aria-label="Акции месяца"></section>
+
+      <section id="price" aria-label="Цены"></section>
+
+      <section id="studios" aria-label="Студии"></section>
+
+      <section id="works" aria-label="Наши работы"></section>
+
+      <section id="loyalty" aria-label="Программа лояльности"></section>
+
+      <section id="social" aria-label="Будем на связи"></section>
+
+      <section id="contacts" aria-label="Контакты"></section>
+    </main>
+
+    <footer id="footer"></footer>
+
+    <script>
+      import { initLenis } from '../scripts/lenis';
+      import { registerMotion } from '../scripts/motion';
+
+      registerMotion();
+      initLenis();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+{
+ "phone": "+7 (812) 317-77-78",
+ "phoneHref": "tel:+78123177778",
+ "email": "thegarden.nail@gmail.com",
+ "hours": "Ежедневно 10:00–21:00",
+ "booking": {
+  "all": "https://n111177.yclients.com/select-city?o=",
+  "group": "https://n111177.yclients.com/group:92771"
+ },
+ "channel": {
+  "telegram": "https://t.me/Garden_StudioClub",
+  "vk": "https://vk.com/pushkingarden"
+ },
+ "privacy": "https://docs.google.com/document/d/17lbdgmt2uT9VqETvf8Zmch6jRYsxfOaF/edit",
+ "studios": [
+  {
+   "id": "pushkin",
+   "name": "Студия в Пушкине",
+   "short": "Пушкин",
+   "city": "Пушкин",
+   "address": "ул. Конюшенная, д. 39/39",
+   "tagline": "Наша флагманская студия!",
+   "text": "Здесь самый широкий спектр услуг, самая большая команда и самые красивые панорамные окна для хорошего настроения, пока Вы проводите время на любимых бьюти-услугах.",
+   "telegram": "https://t.me/TheGardenStudio",
+   "whatsapp": "https://wa.me/qr/4RFADDI7HOE4D1",
+   "max": "https://max.ru/u/f9LHodD0cOLnDD5SGojRzEbDm3nbMHuTE7FxYpxvy4Rihb3m0fBHovOxlUo",
+   "booking": "TODO: прямая ссылка YCLIENTS филиала — уточнить у салона",
+   "photos": [
+    "assets/old-site/04-studio-pushkin/01__DSF7210.jpeg",
+    "assets/old-site/04-studio-pushkin/02__DSF6680.jpeg",
+    "assets/old-site/04-studio-pushkin/03__DSF7201.jpeg",
+    "assets/old-site/04-studio-pushkin/04__DSF7449.jpeg",
+    "assets/old-site/04-studio-pushkin/05__DSF7368.jpeg",
+    "assets/old-site/04-studio-pushkin/06__DSF7319.jpeg",
+    "assets/old-site/04-studio-pushkin/07__DSF7240.jpeg",
+    "assets/old-site/04-studio-pushkin/08__DSF7235.jpeg"
+   ],
+   "envMap": "assets/old-site/04-studio-pushkin/02__DSF6680.jpeg"
+  },
+  {
+   "id": "frunzenskaya",
+   "name": "Студия на Фрунзенской",
+   "short": "Фрунзенская",
+   "city": "Санкт-Петербург",
+   "address": "м. Фрунзенская, ул. Киевская, д. 3",
+   "tagline": "Рядом с Московским проспектом",
+   "text": "Студия вблизи Московского проспекта — динамичная, но сохранившая фирменную атмосферу уюта и комфорта. Здесь Вас ждут любимые услуги, выполненные качественно и за минимальное время.",
+   "telegram": "https://t.me/GardenStudioK",
+   "whatsapp": "https://wa.me/qr/C6BNF6XNJQADP1",
+   "max": "https://max.ru/u/f9LHodD0cOKSufLc_ZRqllMp6KLu5ihYnJ9Cv9jTI5K2IwyNSVSQRzY4WRY",
+   "booking": "TODO: прямая ссылка YCLIENTS филиала — уточнить у салона",
+   "photos": [
+    "assets/old-site/05-studio-frunzenskaya/01__DSF3767.jpeg",
+    "assets/old-site/05-studio-frunzenskaya/02__DSF3841.jpeg",
+    "assets/old-site/05-studio-frunzenskaya/03__DSF3816.jpeg",
+    "assets/old-site/05-studio-frunzenskaya/04__DSF3907.jpeg",
+    "assets/old-site/05-studio-frunzenskaya/05__DSF8314.jpeg",
+    "assets/old-site/05-studio-frunzenskaya/06__DSF8355.jpeg",
+    "assets/old-site/05-studio-frunzenskaya/07__DSF8364.jpeg",
+    "assets/old-site/05-studio-frunzenskaya/08__DSF8292.jpeg",
+    "assets/old-site/05-studio-frunzenskaya/09__DSF8376.jpeg"
+   ],
+   "envMap": "assets/old-site/05-studio-frunzenskaya/03__DSF3816.jpeg"
+  }
+ ]
+}

@@ -1,0 +1,67 @@
+/* Токены дизайн-системы The Garden — «Зеркальный сад».
+   Источник: DESIGN-SYSTEM.md. Не редактировать значения без обновления документа. */
+
+:root {
+  /* Цвет */
+  --color-pearl: #F5F2F7;
+  --color-pearl-2: #ECE6F1;
+  --color-pearl-3: #E1D8E8;
+  --color-peony: #D9BCE3;
+  --color-peony-2: #C9A5D6;
+  --color-peony-deep: #8E5FA3;
+  --color-plum: #241228;
+  --color-plum-2: #4F3A56;
+  --color-leaf: #4E5B2E;
+  --color-leaf-pale: #DDE3C8;
+  --color-chrome-light: #F2F1F5;
+  --color-chrome-mid: #B9B6C2;
+  --color-chrome-dark: #5E5A66;
+  --color-on-plum: #F5F2F7;
+  --color-error: #B3261E;
+  --color-focus: #241228;
+
+  /* Радиусы */
+  --radius-none: 0px;
+  --radius-panel: 32px;
+  --radius-panel-sm: 20px;
+  --radius-full: 9999px;
+  --radius-mirror: 50%;
+
+  /* Отступы */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  --space-11: 176px;
+  --space-12: 224px;
+  --space-margin: clamp(16px, 2.2vw, 32px);
+  --space-gutter: clamp(12px, 1.4vw, 24px);
+  --space-section: clamp(112px, 14vw, 224px);
+
+  /* Движение */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-xs: 160ms;
+  --dur-sm: 320ms;
+  --dur-md: 640ms;
+  --dur-lg: 1100ms;
+  --dur-xl: 1800ms;
+  --stagger: 70ms;
+  --rise: 28px;
+
+  /* Сетка */
+  --grid-margin: var(--space-margin);
+  --grid-gutter: var(--space-gutter);
+
+  /* Компоненты */
+  --nav-height: 72px;
+  --button-height: 56px;
+  --chip-height: 40px;
+}

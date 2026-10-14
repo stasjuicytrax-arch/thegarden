@@ -1,0 +1,86 @@
+/* Шрифты The Garden: Unbounded (дисплей) + Jost (текст/интерфейс).
+   Локальные woff2 в public/fonts, кириллица + латиница.
+   @font-face объявляются компонентом <FontFaces /> (src/components/FontFaces.astro),
+   а не здесь: url() должен учитывать BASE_URL сборки (сайт может быть
+   в подпути, например на GitHub Pages), что в обычном .css не выразить. */
+
+:root {
+  --font-display: 'Unbounded', sans-serif;
+  --font-text: 'Jost', sans-serif;
+}
+
+/* Пять ступеней видимой работы: display / heading-1 / heading-2 / lead / body / small.
+   Цены и кнопки — производные ступени. Все заголовки строчными, переносы — руками (.line). */
+
+.t-display {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(64px, 12vw, 220px);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  text-transform: lowercase;
+}
+
+.t-heading-1 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(40px, 6.4vw, 112px);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  text-transform: lowercase;
+}
+
+.t-heading-2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(28px, 3.2vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.t-lead {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: clamp(20px, 1.1rem + 0.7vw, 28px);
+  line-height: 1.35;
+}
+
+.t-body {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: clamp(17px, 1rem + 0.25vw, 19px);
+  line-height: 1.55;
+  letter-spacing: 0.005em;
+}
+
+.t-small {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+
+.t-price {
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: clamp(17px, 1rem + 0.25vw, 19px);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.t-button {
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.t-marquee {
+  font-family: var(--font-display);
+  font-weight: 200;
+  font-size: clamp(56px, 10vw, 180px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
