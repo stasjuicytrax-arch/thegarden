@@ -1,0 +1,33 @@
+---
+// Геометрия логотипа сохраняется (assets/brand/logo.svg не меняется), но цвет становится
+// монохромным через currentColor: plum на светлом, pearl на тёмном/фото
+// (DESIGN-SYSTEM.md §2). Фирменный коричневый — только в фавиконке/OG.
+import fs from 'node:fs';
+
+const svgUrl = new URL('../../assets/brand/logo.svg', import.meta.url);
+let markup = fs.readFileSync(svgUrl, 'utf-8');
+
+markup = markup.replace(/<metadata>[\s\S]*?<\/metadata>\s*/, '');
+markup = markup.replace(/#913D1C/g, 'currentColor').replace(/#6B3721/g, 'currentColor');
+
+interface Props {
+  height?: string;
+  class?: string;
+}
+const { height = '36px', class: className } = Astro.props;
+---
+
+<span class:list={['logo', className]} style={{ height, color: 'inherit' }} set:html={markup} />
+
+<style>
+  .logo {
+    display: inline-block;
+    width: auto;
+    line-height: 0;
+  }
+  .logo :global(svg) {
+    height: 100%;
+    width: auto;
+    display: block;
+  }
+</style>

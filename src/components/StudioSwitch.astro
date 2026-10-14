@@ -1,0 +1,70 @@
+---
+import { STUDIOS } from '../scripts/studio-state';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<div class:list={['studio-switch', className]} role="group" aria-label="Выбор студии" data-studio-switch>
+  <span class="studio-switch__thumb" aria-hidden="true"></span>
+  {STUDIOS.map((studio) => (
+    <button type="button" class="studio-switch__chip" data-studio={studio.id} aria-pressed="false">
+      {studio.short}
+    </button>
+  ))}
+</div>
+
+<style>
+  .studio-switch {
+    position: relative;
+    display: inline-flex;
+    height: var(--chip-height);
+    background: var(--color-pearl-2);
+    border-radius: var(--radius-full);
+    padding: 2px;
+  }
+
+  .studio-switch__thumb {
+    position: absolute;
+    inset: 2px;
+    background: var(--color-plum);
+    border-radius: var(--radius-full);
+    clip-path: inset(0 100% 0 0 round 9999px);
+    transition: clip-path var(--dur-sm) var(--ease-in-out);
+  }
+
+  .studio-switch__chip {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--space-5);
+    min-height: 0;
+    min-width: 0;
+    height: 100%;
+    font-family: var(--font-text);
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--color-plum);
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+  }
+
+  .studio-switch__chip[aria-pressed='true'] {
+    color: var(--color-on-plum);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .studio-switch__thumb {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { initStudioSwitches } from '../scripts/studio-switch';
+  initStudioSwitches();
+</script>

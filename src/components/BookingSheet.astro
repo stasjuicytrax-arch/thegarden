@@ -1,0 +1,213 @@
+---
+import { STUDIOS, SITE } from '../scripts/studio-state';
+import ButtonPrimary from './ButtonPrimary.astro';
+import Icon from './Icon.astro';
+---
+
+<dialog id="booking-sheet" class="booking-sheet" aria-label="Запись в студию">
+  <div class="booking-sheet__drag" data-booking-drag aria-hidden="true"></div>
+
+  <button type="button" class="booking-sheet__close" data-booking-close aria-label="Закрыть">
+    <Icon name="close" size={18} />
+  </button>
+
+  <h2 class="booking-sheet__title t-heading-2">записаться</h2>
+
+  <p class="booking-sheet__promo t-small" data-booking-promo hidden></p>
+
+  <div class="booking-sheet__studios" role="group" aria-label="Выбор студии">
+    {STUDIOS.map((studio) => (
+      <button type="button" class="booking-sheet__studio" data-studio-row data-studio={studio.id} aria-pressed="false">
+        <span class="booking-sheet__studio-photo" aria-hidden="true"></span>
+        <span class="booking-sheet__studio-info">
+          <span class="booking-sheet__studio-name t-body">{studio.name}</span>
+          <span class="booking-sheet__studio-address t-small">{studio.address}</span>
+          <span class="booking-sheet__studio-hours t-small">{SITE.hours}</span>
+        </span>
+      </button>
+    ))}
+  </div>
+
+  <div class="booking-sheet__cta" data-booking-cta hidden>
+    <ButtonPrimary href="#" data-booking-main-cta target="_blank" rel="noopener">Онлайн-запись</ButtonPrimary>
+
+    <div class="booking-sheet__secondary">
+      <a href="#" data-booking-telegram target="_blank" rel="noopener" class="booking-sheet__icon-btn" aria-label="Написать в Telegram">
+        <Icon name="telegram" />
+      </a>
+      <a href="#" data-booking-whatsapp target="_blank" rel="noopener" class="booking-sheet__icon-btn" aria-label="Написать в WhatsApp">
+        <Icon name="whatsapp" />
+      </a>
+      <a href="#" data-booking-max target="_blank" rel="noopener" class="booking-sheet__icon-btn" aria-label="Написать в MAX">
+        <Icon name="max" />
+      </a>
+      <a href={SITE.phoneHref} class="booking-sheet__icon-btn" aria-label="Позвонить">
+        <Icon name="phone" />
+      </a>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .booking-sheet {
+    position: fixed;
+    inset: 0 0 0 auto;
+    width: min(480px, 100vw);
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: var(--space-7) var(--space-6);
+    border: 0;
+    background: var(--color-pearl);
+    color: var(--color-plum);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    overflow-y: auto;
+    box-shadow: 0 24px 64px -24px rgba(36, 18, 40, 0.28);
+    transform: translateX(100%);
+    transition: transform var(--dur-md) var(--ease-out);
+  }
+  .booking-sheet::backdrop {
+    background: transparent;
+  }
+  .booking-sheet.booking-sheet--open {
+    transform: translateX(0);
+  }
+
+  @media (max-width: 767px) {
+    .booking-sheet {
+      inset: auto 0 0 0;
+      width: 100%;
+      height: 88svh;
+      border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+      transform: translateY(100%);
+      padding-top: var(--space-5);
+    }
+    .booking-sheet.booking-sheet--open {
+      transform: translateY(0);
+    }
+  }
+
+  .booking-sheet__drag {
+    display: none;
+    width: 40px;
+    height: 4px;
+    border-radius: var(--radius-full);
+    background: var(--color-pearl-3);
+    align-self: center;
+    margin-bottom: var(--space-2);
+  }
+  @media (max-width: 767px) {
+    .booking-sheet__drag {
+      display: block;
+    }
+  }
+
+  .booking-sheet__close {
+    position: absolute;
+    top: var(--space-5);
+    right: var(--space-5);
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background: var(--color-pearl-2);
+    color: var(--color-plum);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .booking-sheet__title {
+    text-transform: lowercase;
+  }
+
+  .booking-sheet__promo[data-filled] {
+    display: block;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-leaf-pale);
+    color: var(--color-leaf);
+    border-radius: var(--radius-panel-sm);
+  }
+
+  .booking-sheet__studios {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .booking-sheet__studio {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--radius-panel-sm);
+    background: var(--color-pearl-2);
+    text-align: left;
+    transition: background-color var(--dur-xs) var(--ease-out);
+  }
+  .booking-sheet__studio[aria-pressed='true'] {
+    background: var(--color-peony);
+  }
+
+  .booking-sheet__studio-photo {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--color-peony-2);
+  }
+
+  .booking-sheet__studio-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+  .booking-sheet__studio-name {
+    color: var(--color-plum);
+  }
+  .booking-sheet__studio-address,
+  .booking-sheet__studio-hours {
+    color: var(--color-plum-2);
+  }
+
+  .booking-sheet__cta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding-top: var(--space-4);
+  }
+  .booking-sheet__cta[hidden] {
+    display: none;
+  }
+
+  .booking-sheet__secondary {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .booking-sheet__icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: var(--color-pearl-2);
+    color: var(--color-plum);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .booking-sheet,
+    .booking-sheet__studio {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { initBookingSheet } from '../scripts/booking-sheet';
+  initBookingSheet();
+</script>

@@ -1,5 +1,8 @@
 ---
 import FontFaces from '../components/FontFaces.astro';
+import Header from '../components/Header.astro';
+import MobileMenu from '../components/MobileMenu.astro';
+import BookingSheet from '../components/BookingSheet.astro';
 import '../styles/tokens.css';
 import '../styles/typography.css';
 import '../styles/base.css';
@@ -22,8 +25,9 @@ const description =
     </script>
   </head>
   <body>
-    <!-- Шапка + меню — состав и поведение собираются на Шаге 2 (TZ.md §4) -->
-    <header id="header"></header>
+    <Header />
+    <MobileMenu />
+    <BookingSheet />
 
     <main>
       <section id="top" aria-label="Первый экран"></section>
@@ -48,11 +52,12 @@ const description =
     <footer id="footer"></footer>
 
     <script>
-      import { initLenis } from '../scripts/lenis';
+      import { initLenis, initAnchorScrolling } from '../scripts/lenis';
       import { registerMotion } from '../scripts/motion';
 
       registerMotion();
       initLenis();
+      initAnchorScrolling();
     </script>
   </body>
 </html>

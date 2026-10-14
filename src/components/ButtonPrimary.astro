@@ -1,0 +1,80 @@
+---
+// Основная кнопка: пилюля plum, текст pearl, справа круг 40px (56px на телефоне — компактный
+// вариант задаёт класс modifier) со стрелкой ↗ (DESIGN-SYSTEM.md §9).
+import Icon from './Icon.astro';
+
+interface Props {
+  href?: string;
+  class?: string;
+  compact?: boolean;
+  [key: string]: unknown;
+}
+const { href, class: className, compact = false, ...rest } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  href={href}
+  type={href ? undefined : 'button'}
+  class:list={['btn-primary', { 'btn-primary--compact': compact }, className]}
+  {...rest}
+>
+  <span class="btn-primary__label t-button"><slot /></span>
+  <span class="btn-primary__arrow" aria-hidden="true">
+    <Icon name="arrow" size={16} />
+  </span>
+</Tag>
+
+<style>
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    height: var(--button-height);
+    padding-left: 28px;
+    padding-right: 6px;
+    background: var(--color-plum);
+    color: var(--color-on-plum);
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+    transition: transform var(--dur-xs) var(--ease-out);
+  }
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  .btn-primary--compact {
+    height: 44px;
+    padding-left: var(--space-5);
+    padding-right: 4px;
+  }
+
+  .btn-primary__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: var(--radius-full);
+    background: var(--color-pearl);
+    color: var(--color-plum);
+    transition: transform var(--dur-xs) var(--ease-out);
+  }
+  .btn-primary--compact .btn-primary__arrow {
+    width: 32px;
+    height: 32px;
+  }
+
+  .btn-primary:hover .btn-primary__arrow {
+    transform: translate(2px, -2px) scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-primary,
+    .btn-primary__arrow {
+      transition: none;
+    }
+  }
+</style>

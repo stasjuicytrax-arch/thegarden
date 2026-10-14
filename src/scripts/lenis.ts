@@ -38,3 +38,18 @@ export function scrollToAnchor(target: string | HTMLElement): void {
     el?.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
   }
 }
+
+/** Перехватывает клики по внутренним якорям (#id) по всему сайту и ведёт их через Lenis. */
+export function initAnchorScrolling(): void {
+  document.addEventListener('click', (e) => {
+    const link = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+    if (!link) return;
+    const id = link.getAttribute('href');
+    if (!id || id === '#') return;
+    const el = document.querySelector(id);
+    if (!el) return;
+    e.preventDefault();
+    scrollToAnchor(id);
+    history.pushState(null, '', id);
+  });
+}

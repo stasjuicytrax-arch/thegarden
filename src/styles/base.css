@@ -93,6 +93,22 @@ section {
   position: relative;
 }
 
+main {
+  padding-top: var(--nav-height);
+}
+
+html.scroll-locked,
+html.scroll-locked body {
+  overflow: hidden;
+}
+
+dialog {
+  color-scheme: light;
+}
+dialog:not([open]) {
+  display: none;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

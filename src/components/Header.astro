@@ -1,0 +1,180 @@
+---
+import Logo from './Logo.astro';
+import ButtonPrimary from './ButtonPrimary.astro';
+import { SITE } from '../scripts/studio-state';
+
+const NAV = [
+  { href: '#sale', label: 'Акции' },
+  { href: '#price', label: 'Цены' },
+  { href: '#studios', label: 'Студии' },
+  { href: '#contacts', label: 'Контакты' },
+];
+---
+
+<header class="header" data-header>
+  <div class="header__inner">
+    <a href="#top" class="header__logo" aria-label="The Garden — наверх">
+      <Logo height="36px" class="header__logo-mark" />
+    </a>
+
+    <nav class="header__nav" aria-label="Разделы сайта">
+      <ul class="header__nav-list">
+        {NAV.map((item) => (
+          <li>
+            <a href={item.href} class="header__nav-link" data-nav-link={item.href}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="header__actions">
+      <a href={SITE.phoneHref} class="header__phone t-body">{SITE.phone}</a>
+      <ButtonPrimary class="header__book" compact data-open-booking>Записаться</ButtonPrimary>
+      <button
+        type="button"
+        class="header__menu-btn"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Открыть меню"
+      >
+        <span class="header__menu-line"></span>
+        <span class="header__menu-line"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 40;
+    height: var(--nav-height);
+    background: var(--color-pearl);
+    transition: transform var(--dur-sm) var(--ease-out);
+  }
+
+  .header[data-hidden='true'] {
+    transform: translateY(-100%);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding-inline: var(--grid-margin);
+    gap: var(--space-5);
+  }
+
+  .header__logo {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-plum);
+    flex-shrink: 0;
+  }
+  .header__logo-mark {
+    height: 28px;
+  }
+  @media (min-width: 768px) {
+    .header__logo-mark {
+      height: 36px;
+    }
+  }
+
+  .header__nav {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .header__nav {
+      display: block;
+    }
+  }
+  .header__nav-list {
+    display: flex;
+    gap: var(--space-6);
+  }
+  .header__nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: var(--nav-height);
+    font-family: var(--font-text);
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--color-plum);
+  }
+  .header__nav-link[aria-current='true']::after {
+    content: '';
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-plum);
+    transform: translateX(-50%);
+  }
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .header__phone {
+    display: none;
+    color: var(--color-plum);
+    white-space: nowrap;
+  }
+  @media (min-width: 1280px) {
+    .header__phone {
+      display: inline-flex;
+    }
+  }
+
+  .header__menu-btn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background: var(--color-pearl-2);
+  }
+  @media (min-width: 1024px) {
+    .header__menu-btn {
+      display: none;
+    }
+  }
+  .header__menu-line {
+    display: block;
+    width: 18px;
+    height: 1.5px;
+    background: var(--color-plum);
+    transition: transform var(--dur-xs) var(--ease-out), opacity var(--dur-xs) var(--ease-out);
+  }
+  .header__menu-btn[aria-expanded='true'] .header__menu-line:first-child {
+    transform: translateY(3.25px) rotate(45deg);
+  }
+  .header__menu-btn[aria-expanded='true'] .header__menu-line:last-child {
+    transform: translateY(-3.25px) rotate(-45deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .header,
+    .header__menu-line {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { initHeader } from '../scripts/header';
+  initHeader();
+</script>

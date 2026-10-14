@@ -1,0 +1,163 @@
+---
+import { STUDIOS, SITE } from '../scripts/studio-state';
+import Icon from './Icon.astro';
+
+const NAV = [
+  { href: '#sale', label: 'акции' },
+  { href: '#price', label: 'цены' },
+  { href: '#studios', label: 'студии' },
+  { href: '#works', label: 'работы' },
+  { href: '#loyalty', label: 'лояльность' },
+  { href: '#contacts', label: 'контакты' },
+];
+---
+
+<dialog id="mobile-menu" class="mobile-menu" aria-label="Меню сайта">
+  <nav aria-label="Разделы сайта">
+    <ul class="mobile-menu__list">
+      {NAV.map((item, i) => (
+        <li class="mobile-menu__item" style={`--i: ${i}`}>
+          <a href={item.href} class="mobile-menu__link">{item.label}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+
+  <div class="mobile-menu__footer">
+    <a href={SITE.phoneHref} class="mobile-menu__phone t-lead">{SITE.phone}</a>
+
+    <div class="mobile-menu__messengers" data-studio-messengers>
+      {STUDIOS.map((studio) => (
+        <div class="mobile-menu__messenger-group" data-studio-id={studio.id} hidden>
+          <a href={studio.telegram} target="_blank" rel="noopener" aria-label={`Telegram студии ${studio.short}`} class="mobile-menu__icon">
+            <Icon name="telegram" />
+          </a>
+          <a href={studio.whatsapp} target="_blank" rel="noopener" aria-label={`WhatsApp студии ${studio.short}`} class="mobile-menu__icon">
+            <Icon name="whatsapp" />
+          </a>
+          <a href={studio.max} target="_blank" rel="noopener" aria-label={`MAX студии ${studio.short}`} class="mobile-menu__icon">
+            <Icon name="max" />
+          </a>
+        </div>
+      ))}
+      <a href={SITE.channel.vk} target="_blank" rel="noopener" aria-label="ВКонтакте" class="mobile-menu__icon">
+        <Icon name="vk" />
+      </a>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--color-peony);
+    color: var(--color-plum);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-9);
+    clip-path: circle(0% at var(--origin-x, 90%) var(--origin-y, 5%));
+    transition: clip-path var(--dur-md) var(--ease-out);
+  }
+  .mobile-menu::backdrop {
+    background: transparent;
+  }
+  .mobile-menu[open].mobile-menu--open {
+    clip-path: circle(150% at var(--origin-x, 90%) var(--origin-y, 5%));
+  }
+
+  .mobile-menu__list {
+    padding-inline: var(--grid-margin);
+  }
+  .mobile-menu__item {
+    opacity: 0;
+    transform: translateY(var(--rise));
+    transition: opacity var(--dur-md) var(--ease-out), transform var(--dur-md) var(--ease-out);
+    transition-delay: calc(var(--i) * var(--stagger));
+  }
+  .mobile-menu--open .mobile-menu__item {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .mobile-menu__link {
+    display: block;
+    padding-block: 0.2em;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 11vw;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--color-plum);
+  }
+
+  .mobile-menu__footer {
+    padding-inline: var(--grid-margin);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .mobile-menu__phone {
+    color: var(--color-plum);
+  }
+
+  .mobile-menu__messengers {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .mobile-menu__messenger-group {
+    display: flex;
+    gap: var(--space-3);
+  }
+  .mobile-menu__messenger-group[hidden] {
+    display: none;
+  }
+
+  .mobile-menu__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: var(--color-pearl-2);
+    color: var(--color-plum);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu,
+    .mobile-menu__item {
+      transition: none;
+    }
+    .mobile-menu {
+      clip-path: none;
+    }
+  }
+</style>
+
+<script>
+  import { initMobileMenu } from '../scripts/mobile-menu';
+  import { getStudio, onStudioChange, type StudioId } from '../scripts/studio-state';
+
+  function paintMessengers(id: StudioId | null): void {
+    const fallback: StudioId = 'pushkin';
+    const active = id ?? fallback;
+    document.querySelectorAll<HTMLElement>('[data-studio-id]').forEach((group) => {
+      group.hidden = group.dataset.studioId !== active;
+    });
+  }
+
+  initMobileMenu();
+  paintMessengers(getStudio());
+  onStudioChange(paintMessengers);
+</script>
