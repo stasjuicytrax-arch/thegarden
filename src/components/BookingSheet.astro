@@ -69,6 +69,10 @@ import Icon from './Icon.astro';
     transform: translateX(100%);
     transition: transform var(--dur-md) var(--ease-out);
   }
+  /* закрытая шторка не участвует в раскладке (иначе стоит за правым краем и растягивает страницу) */
+  .booking-sheet:not([open]) {
+    display: none;
+  }
   .booking-sheet::backdrop {
     background: transparent;
   }

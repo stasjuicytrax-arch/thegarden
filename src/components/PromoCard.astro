@@ -142,6 +142,9 @@ const discountSuffix = discountMatch?.[3] ?? '';
 
   .promo-card__title {
     margin-top: var(--space-2);
+    /* длинные слова («Биоревитализация») не должны выталкивать колонку за край */
+    overflow-wrap: anywhere;
+    hyphens: auto;
   }
 
   .promo-card__note {
