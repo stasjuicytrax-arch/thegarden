@@ -1,0 +1,139 @@
+---
+import site from '../data/site.json';
+import Marquee from './Marquee.astro';
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+interface Row {
+  title: string;
+  href?: string;
+  icon: IconName;
+  studio?: string;
+  booking?: boolean;
+}
+
+const channelRows: Row[] = [
+  { title: 'Telegram-канал The Garden', href: site.channel.telegram, icon: 'telegram' },
+  { title: 'ВКонтакте', href: site.channel.vk, icon: 'vk' },
+];
+const studioRows: Row[] = site.studios.flatMap((s) => [
+  { title: `The Garden ${s.short} — Telegram`, href: s.telegram, icon: 'telegram' as IconName, studio: s.id },
+  { title: `The Garden ${s.short} — WhatsApp`, href: s.whatsapp, icon: 'whatsapp' as IconName, studio: s.id },
+  { title: `The Garden ${s.short} — MAX`, href: s.max, icon: 'max' as IconName, studio: s.id },
+]);
+const bookingRow: Row = { title: 'Онлайн-запись', icon: 'arrow', booking: true };
+const rows: Row[] = [...studioRows, ...channelRows, bookingRow];
+---
+
+<div class="social" data-social>
+  <Marquee text="the garden · the garden · the garden ·" class="social__marquee" />
+
+  <div class="grid">
+    <p class="t-lead social__lead">
+      Оставайтесь с нами на связи — здесь мы делимся своими работами, жизнью студии и лайфхаками. И ждём Ваших отзывов!
+    </p>
+
+    <ul class="social__list" data-social-list>
+      {rows.map((row, i) => (
+        <li class="social__item" data-studio-row={row.studio} style={`order:${i}`}>
+          {row.booking ? (
+            <button type="button" class="social__link" data-open-booking>
+              <span class="social__icon" aria-hidden="true"><Icon name="arrow" size={22} /></span>
+              <span class="social__title t-heading-2">{row.title}</span>
+              <span class="social__go" aria-hidden="true"><Icon name="arrow" size={20} /></span>
+            </button>
+          ) : (
+            <a class="social__link" href={row.href} target="_blank" rel="noopener">
+              <span class="social__icon" aria-hidden="true"><Icon name={row.icon} size={22} /></span>
+              <span class="social__title t-heading-2">{row.title}</span>
+              <span class="social__go" aria-hidden="true"><Icon name="arrow" size={20} /></span>
+            </a>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<style>
+  .social {
+    padding-block: var(--space-section);
+    background: var(--color-pearl);
+  }
+  .social__marquee {
+    margin-bottom: var(--space-8);
+    font-weight: 200;
+  }
+  .social__lead {
+    grid-column: 1 / -1;
+    max-width: 38em;
+    color: var(--color-plum);
+    margin: 0 0 var(--space-7);
+  }
+  @media (min-width: 1024px) {
+    .social__lead {
+      grid-column: 2 / 9;
+    }
+  }
+  .social__list {
+    grid-column: 1 / -1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .social__item:nth-child(odd) .social__link {
+    background: var(--color-pearl-2);
+  }
+  .social__link {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) 48px;
+    align-items: center;
+    column-gap: var(--space-4);
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-plum);
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 160ms var(--ease-out);
+  }
+  .social__link:hover {
+    background: var(--color-peony);
+  }
+  .social__icon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--color-pearl-2);
+    color: var(--color-plum);
+  }
+  .social__item:nth-child(odd) .social__icon {
+    background: var(--color-pearl);
+  }
+  .social__title {
+    margin: 0;
+    font-size: clamp(18px, 1.2rem + 0.5vw, 28px);
+  }
+  .social__go {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--color-plum);
+    color: var(--color-pearl);
+  }
+</style>
+
+<script>
+  import { initSocial } from '../scripts/social';
+  initSocial();
+</script>

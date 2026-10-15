@@ -1,0 +1,126 @@
+---
+import loyalty from '../data/loyalty.json';
+
+const total = loyalty.programs.reduce((n, p) => n + p.items.length, 0);
+---
+
+<div class="loyalty" data-loyalty data-count={total}>
+  <div class="grid">
+    <h2 class="t-heading-1 loyalty__title">
+      <span class="loyalty__line">подарки</span>
+      <span class="loyalty__line loyalty__line--2">для своих</span>
+    </h2>
+
+    <table class="loyalty__table">
+      <caption class="sr-only">Программа лояльности</caption>
+      <thead class="sr-only">
+        <tr>
+          <th scope="col">Программа</th>
+          <th scope="col">Услуга</th>
+          <th scope="col">Выгода</th>
+        </tr>
+      </thead>
+      {loyalty.programs.map((program) => (
+        <tbody class="loyalty__group">
+          {program.items.map((item, i) => (
+            <tr class="loyalty__row">
+              <th scope="row" class="loyalty__program t-heading-2">{i === 0 ? program.title : ''}</th>
+              <td class="loyalty__service t-body">{item.service}</td>
+              <td class="loyalty__benefit t-heading-2">{item.benefit}</td>
+            </tr>
+          ))}
+          <tr class="loyalty__foot-row">
+            <td class="loyalty__foot t-small" colspan="3">{program.footnote}</td>
+          </tr>
+        </tbody>
+      ))}
+    </table>
+  </div>
+</div>
+
+<style>
+  .loyalty {
+    background: var(--color-peony);
+    padding-block: var(--space-section);
+  }
+  .loyalty__title {
+    grid-column: 1 / -1;
+    margin: 0 0 var(--space-8);
+  }
+  .loyalty__line {
+    display: block;
+  }
+  @media (min-width: 1024px) {
+    .loyalty__line--2 {
+      padding-left: calc(100% / 6);
+    }
+  }
+
+  .loyalty__table {
+    grid-column: 1 / -1;
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--color-plum);
+  }
+  .loyalty__group {
+    display: block;
+    margin-bottom: var(--space-7);
+  }
+  .loyalty__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--space-4);
+    row-gap: 4px;
+    padding: var(--space-3) var(--space-4);
+    border-radius: 24px;
+  }
+  .loyalty__row:nth-child(even) {
+    background: var(--color-peony-2);
+  }
+  .loyalty__program {
+    grid-column: 1 / -1;
+    font-size: 22px;
+    margin: 0;
+    text-align: left;
+    padding: 0;
+  }
+  .loyalty__program:empty {
+    display: none;
+  }
+  .loyalty__service {
+    padding: 0;
+  }
+  .loyalty__benefit {
+    padding: 0;
+    text-align: right;
+    font-size: clamp(18px, 1.2rem + 0.6vw, 28px);
+    white-space: normal;
+  }
+  .loyalty__foot-row {
+    display: block;
+    padding: var(--space-2) var(--space-4) 0;
+  }
+  .loyalty__foot {
+    padding: 0;
+    color: var(--color-plum-2);
+  }
+
+  @media (min-width: 1024px) {
+    .loyalty__row {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--grid-gutter);
+      align-items: baseline;
+    }
+    .loyalty__program {
+      grid-column: 1 / 4;
+      font-size: clamp(20px, 1.6vw, 28px);
+    }
+    .loyalty__service {
+      grid-column: 4 / 10;
+    }
+    .loyalty__benefit {
+      grid-column: 10 / 13;
+      font-size: clamp(20px, 1.8vw, 32px);
+    }
+  }
+</style>

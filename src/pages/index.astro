@@ -10,6 +10,10 @@ import Sale from '../components/Sale.astro';
 import Price from '../components/Price.astro';
 import Studios from '../components/Studios.astro';
 import Works from '../components/Works.astro';
+import Loyalty from '../components/Loyalty.astro';
+import Social from '../components/Social.astro';
+import Contacts from '../components/Contacts.astro';
+import Footer from '../components/Footer.astro';
 import '../styles/tokens.css';
 import '../styles/typography.css';
 import '../styles/base.css';
@@ -62,14 +66,22 @@ const description =
         <Works />
       </section>
 
-      <section id="loyalty" aria-label="Программа лояльности"></section>
+      <section id="loyalty" aria-label="Программа лояльности">
+        <Loyalty />
+      </section>
 
-      <section id="social" aria-label="Будем на связи"></section>
+      <section id="social" aria-label="Будем на связи">
+        <Social />
+      </section>
 
-      <section id="contacts" aria-label="Контакты"></section>
+      <section id="contacts" aria-label="Контакты">
+        <Contacts />
+      </section>
     </main>
 
-    <footer id="footer"></footer>
+    <footer id="footer">
+      <Footer />
+    </footer>
 
     <script>
       import { initLenis, initAnchorScrolling } from '../scripts/lenis';

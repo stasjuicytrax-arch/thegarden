@@ -1,0 +1,139 @@
+---
+import { Image } from 'astro:assets';
+import site from '../data/site.json';
+import facade from '../../assets/old-site/01-hero/01_Trl5C2PuxsC7njqGkTcN.jpg';
+
+const mapsUrl = (address: string, city: string) =>
+  `https://yandex.ru/maps/?text=${encodeURIComponent(`${city}, ${address}`)}`;
+const names: Record<string, string> = { pushkin: 'пушкин', frunzenskaya: 'фрунзенская' };
+const addressText: Record<string, string> = {
+  pushkin: 'ул. Конюшенная, 39/39',
+  frunzenskaya: 'ул. Киевская, 3, м. Фрунзенская',
+};
+---
+
+<div class="contacts" data-contacts>
+  <h2 class="sr-only">Контакты</h2>
+  <ul class="contacts__rows">
+    {site.studios.map((s, i) => (
+      <li class="contacts__row" data-studio-row={s.id} style={`order:${i}`}>
+        <span class="contacts__name t-big">{names[s.id]}</span>
+        <a class="contacts__value t-big" href={mapsUrl(s.address, s.city)} target="_blank" rel="noopener">
+          {addressText[s.id]}
+        </a>
+        <a class="contacts__map t-small" href={mapsUrl(s.address, s.city)} target="_blank" rel="noopener">
+          Открыть в Яндекс.Картах
+        </a>
+        {i === 0 && (
+          <span class="contacts__facade" aria-hidden="true">
+            <Image src={facade} alt="" width={240} height={240} />
+          </span>
+        )}
+      </li>
+    ))}
+    <li class="contacts__row contacts__row--plain" style="order:2">
+      <span class="contacts__value t-big">{site.hours.toLowerCase()}</span>
+    </li>
+    <li class="contacts__row" style="order:3">
+      <a class="contacts__value t-big" href={site.phoneHref}>{site.phone.replace(/[()]/g, '').replace('+7 812', '+7 812')}</a>
+    </li>
+    <li class="contacts__row contacts__row--mail" style="order:4">
+      <a class="contacts__value t-big" href={`mailto:${site.email}`}>напишите</a>
+      <a class="contacts__round" href={`mailto:${site.email}`} aria-label={`Написать на ${site.email}`}>
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 16 16 8m0 0H9m7 0v7" />
+        </svg>
+      </a>
+      <span class="contacts__email t-small">{site.email}</span>
+    </li>
+  </ul>
+</div>
+
+<style>
+  .contacts {
+    padding-top: var(--space-section);
+  }
+  .contacts__rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .contacts__row {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) var(--space-6);
+    padding: var(--space-4) var(--grid-margin);
+    background: var(--color-pearl-2);
+    color: var(--color-plum);
+  }
+  .contacts__row:nth-child(even) {
+    background: var(--color-peony);
+  }
+  .t-big {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(30px, 9.6vw, 88px);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    text-transform: lowercase;
+    color: var(--color-plum);
+    text-decoration: none;
+  }
+  @media (min-width: 768px) {
+    .t-big {
+      font-size: clamp(44px, 6vw, 88px);
+    }
+  }
+  .contacts__map {
+    color: var(--color-plum-2);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .contacts__facade {
+    position: absolute;
+    right: var(--grid-margin);
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(64px, 8vw, 120px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  .contacts__facade :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .contacts__row--mail {
+    background: var(--color-plum);
+    align-items: center;
+  }
+  .contacts__row--mail .t-big {
+    color: var(--color-pearl);
+  }
+  .contacts__row--mail .contacts__email {
+    color: var(--color-pearl-3);
+  }
+  .contacts__row:nth-child(even).contacts__row--mail {
+    background: var(--color-plum);
+  }
+  .contacts__round {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--color-pearl);
+    color: var(--color-plum);
+  }
+  @media (max-width: 767px) {
+    .contacts__facade {
+      display: none;
+    }
+  }
+</style>
