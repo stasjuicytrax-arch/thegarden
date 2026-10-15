@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger, prefersReducedMotion } from './motion';
+import { initFlower } from './flower';
 
 function runLoadSequence(hero: HTMLElement): void {
   const lines = hero.querySelectorAll<HTMLElement>('[data-hero-line]');
@@ -54,6 +55,8 @@ function initFieldShift(hero: HTMLElement): void {
 export function initHero(): void {
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   if (!hero) return;
+
+  initFlower();
 
   if (!prefersReducedMotion()) {
     runLoadSequence(hero);
