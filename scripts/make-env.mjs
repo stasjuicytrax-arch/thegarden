@@ -11,7 +11,7 @@ const poles = Buffer.from(
   <stop offset="0.72" stop-color="#D9BCE3" stop-opacity="0"/><stop offset="1" stop-color="#D9BCE3"/>
   </linearGradient></defs><rect width="100%" height="100%" fill="url(#g)"/></svg>`);
 for (const [src, out] of jobs) {
-  await sharp(src).resize(W, H, { fit: 'cover' }).blur(18).modulate({ brightness: 1.05 })
+  await sharp(src).resize(W, H, { fit: 'cover' }).blur(6).modulate({ brightness: 1.05 })
     .composite([{ input: poles }]).jpeg({ quality: 82 }).toFile(out);
   console.log(out);
 }

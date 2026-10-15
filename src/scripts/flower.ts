@@ -5,7 +5,7 @@ import { getStudio, onStudioChange, type StudioId } from './studio-state';
 import { prefersReducedMotion } from './motion';
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
-const ENV_SIZE = { w: 1024, h: 512 };
+const ENV_SIZE = { w: 2048, h: 1024 };
 
 function canRunWebGL(): boolean {
   const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
@@ -33,8 +33,16 @@ export function initFlower(): void {
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   if (!host || !hero || !canRunWebGL()) return;
 
+  const launch = () =>
+    void start(host, hero).catch((err) => console.error('[flower] сцена не запущена:', err));
+
   // после первого кадра
-  requestAnimationFrame(() => requestAnimationFrame(() => void start(host, hero).catch(() => {})));
+  requestAnimationFrame(() => requestAnimationFrame(launch));
+
+  // возврат из bfcache: сцена была освобождена в pagehide — поднимаем заново
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted && !host.querySelector('canvas')) launch();
+  });
 }
 
 async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
@@ -51,7 +59,8 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
   renderer.toneMappingExposure = 1.05;
   const canvas = renderer.domElement;
   canvas.setAttribute('aria-hidden', 'true');
-  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;';
+  canvas.style.cssText =
+    'position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity 320ms ease-out;will-change:transform;';
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
@@ -148,8 +157,18 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
 
   const fallbackEl = host.querySelector<HTMLElement>('.flower-fallback');
   host.appendChild(canvas);
-  fallbackEl?.style.setProperty('visibility', 'hidden');
   let dead = false;
+  let firstFrameDone = false;
+
+  // Курсор наклоняет цветок до ±8° — только на устройствах с точным указателем (desktop).
+  const TILT = (8 * Math.PI) / 180;
+  const canTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches && !mobile;
+  const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
+  const onPointer = (e: PointerEvent) => {
+    pointer.tx = (e.clientX / window.innerWidth) * 2 - 1;
+    pointer.ty = (e.clientY / window.innerHeight) * 2 - 1;
+  };
+  if (canTilt) window.addEventListener('pointermove', onPointer, { passive: true });
 
   const resize = () => {
     const r = host.getBoundingClientRect();
@@ -181,8 +200,27 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
     }
     const tt = Math.max((now - t0) / 1000, 0);
     for (const pt of petals) pt.pivot.children[0].rotation.x = -(Math.PI / 2 - tilt(pt, tt));
-    flower.rotation.y = tt * 0.06;
+    // скролл первого экрана: поворот до 40° и опускание на 10vh
+    const r = hero.getBoundingClientRect();
+    const p = Math.min(Math.max(-r.top / Math.max(r.height, 1), 0), 1);
+    pointer.x += (pointer.tx - pointer.x) * 0.08;
+    pointer.y += (pointer.ty - pointer.y) * 0.08;
+    flower.rotation.y = tt * 0.06 + p * ((40 * Math.PI) / 180);
+    flower.rotation.x = pointer.y * TILT;
+    flower.rotation.z = -pointer.x * TILT;
+    canvas.style.transform = `translate3d(0, ${(p * 10).toFixed(2)}vh, 0)`;
     renderer.render(scene, camera);
+    if (!firstFrameDone) {
+      // fallback прячем только после первого реально отрисованного кадра
+      firstFrameDone = true;
+      requestAnimationFrame(() => {
+        if (dead) return;
+        canvas.style.opacity = '1';
+        window.setTimeout(() => {
+          if (!dead) fallbackEl?.style.setProperty('visibility', 'hidden');
+        }, 340);
+      });
+    }
     requestAnimationFrame(frame);
   };
   const kick = () => {
@@ -224,6 +262,12 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
     io.disconnect();
     document.removeEventListener('visibilitychange', kick);
     unsubscribe();
+    window.removeEventListener('pointermove', onPointer);
+    window.removeEventListener('pagehide', teardown);
+    flower.traverse((o) => {
+      if ((o as import('three').Mesh).isMesh) (o as import('three').Mesh).geometry.dispose();
+    });
+    material.dispose();
     envRT?.dispose();
     envTex.dispose();
     pmrem.dispose();
@@ -231,6 +275,8 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
     canvas.remove();
     fallbackEl?.style.removeProperty('visibility');
   };
+  // уход со страницы: освобождаем GPU-ресурсы
+  window.addEventListener('pagehide', teardown);
   canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();
     dead = true;
@@ -239,6 +285,6 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
   });
   canvas.addEventListener('webglcontextrestored', () => {
     teardown();
-    void start(host, hero).catch(() => {});
+    void start(host, hero).catch((err) => console.error('[flower] пересоздание сцены:', err));
   });
 }

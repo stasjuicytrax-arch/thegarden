@@ -45,8 +45,7 @@ function runLoadSequence(hero: HTMLElement): void {
 function initFieldShift(hero: HTMLElement): void {
   ScrollTrigger.create({
     trigger: hero,
-    start: 'top top',
-    end: '60% top',
+    start: '60% top', // 60% высоты hero прокручено
     onEnter: () => hero.setAttribute('data-field', 'peony'),
     onLeaveBack: () => hero.setAttribute('data-field', 'pearl'),
   });

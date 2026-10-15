@@ -51,6 +51,14 @@ import FlowerFallback from './FlowerFallback.astro';
   .hero[data-field='peony'] .hero__field {
     background: var(--color-peony);
   }
+  /* на 60% скролла поле переходит в peony на всю секцию */
+  .hero {
+    background-color: transparent;
+    transition: background-color var(--dur-md) var(--ease-in-out);
+  }
+  .hero[data-field='peony'] {
+    background-color: var(--color-peony);
+  }
 
   .hero__title {
     position: relative;
