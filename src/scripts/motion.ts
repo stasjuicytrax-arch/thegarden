@@ -23,3 +23,7 @@ export function registerMotion(): typeof gsap {
 }
 
 export { gsap, ScrollTrigger, SplitText, Flip };
+
+// Плагины регистрируются сразу при загрузке модуля: компоненты создают ScrollTrigger/SplitText
+// в своих скриптах раньше, чем отработает inline-скрипт страницы.
+if (typeof window !== 'undefined') registerMotion();

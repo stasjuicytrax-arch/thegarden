@@ -64,8 +64,8 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
-  camera.position.set(0, 3.1, 4.6);
-  camera.lookAt(0, 0.1, 0);
+  camera.position.set(0, 2.3, 5.0);
+  camera.lookAt(0, 0.55, 0);
 
   // env: канвас-кроссфейд двух equirect → PMREM
   const envCanvas = document.createElement('canvas');
@@ -125,34 +125,35 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
 
   const GOLDEN = 137.508 * (Math.PI / 180);
   const tiers = [
-    { n: 5, len: 1.25, wid: 0.95, tilt: 1.15, y: 0.0 },
-    { n: 8, len: 1.0, wid: 0.8, tilt: 0.9, y: 0.05 },
-    { n: 11, len: 0.78, wid: 0.62, tilt: 0.62, y: 0.1 },
-    { n: 14, len: 0.55, wid: 0.46, tilt: 0.38, y: 0.15 },
+    { n: 5, len: 1.25, wid: 0.95, tilt: 1.08, y: 0.0 },
+    { n: 8, len: 1.1, wid: 0.85, tilt: 0.96, y: 0.22 },
+    { n: 11, len: 1.0, wid: 0.7, tilt: 0.66, y: 0.5 },
+    { n: 14, len: 0.85, wid: 0.55, tilt: 0.42, y: 0.8 },
   ];
   const flower = new THREE.Group();
   const petals: { pivot: Group; from: number; to: number; delay: number }[] = [];
   tiers.forEach((t, ti) => {
-    const geo = petalGeo(t.len, t.wid, 0.32, 0.35, ti * 3.1);
+    const geo = petalGeo(t.len, t.wid, 0.3, -0.14, ti * 3.1);
     for (let i = 0; i < t.n; i++) {
       const pivot = new THREE.Group();
       pivot.position.y = t.y;
       pivot.rotation.y = i * ((Math.PI * 2) / t.n) + ti * GOLDEN;
       pivot.add(new THREE.Mesh(geo, material));
       flower.add(pivot);
-      petals.push({ pivot, from: 0.26, to: t.tilt, delay: (3 - ti) * 0.18 + i * 0.012 });
+      petals.push({ pivot, from: 0.22, to: t.tilt, delay: (3 - ti) * 0.18 + i * 0.012 });
     }
   });
-  const budGeo = petalGeo(0.34, 0.26, 0.12, 0.05, 7);
+  const budGeo = petalGeo(0.62, 0.34, 0.12, -0.05, 7);
   for (let i = 0; i < 12; i++) {
     const pivot = new THREE.Group();
-    pivot.position.y = 0.12;
+    pivot.position.y = 0.95;
     pivot.rotation.y = i * GOLDEN;
     pivot.add(new THREE.Mesh(budGeo, material));
     flower.add(pivot);
     petals.push({ pivot, from: 0.1, to: 0.18 + (i % 3) * 0.05, delay: 0.55 });
   }
-  flower.position.y = -0.3;
+  flower.position.y = -0.15;
+  flower.scale.y = 1.0;
   scene.add(flower);
 
   const fallbackEl = host.querySelector<HTMLElement>('.flower-fallback');
@@ -199,7 +200,7 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
       return;
     }
     const tt = Math.max((now - t0) / 1000, 0);
-    for (const pt of petals) pt.pivot.children[0].rotation.x = -(Math.PI / 2 - tilt(pt, tt));
+    for (const pt of petals) pt.pivot.children[0].rotation.x = -tilt(pt, tt);
     // скролл первого экрана: поворот до 40° и опускание на 10vh
     const r = hero.getBoundingClientRect();
     const p = Math.min(Math.max(-r.top / Math.max(r.height, 1), 0), 1);

@@ -45,11 +45,8 @@ import FlowerFallback from './FlowerFallback.astro';
     max-height: 900px;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    background: var(--color-pearl);
-    transition: background-color var(--dur-md) var(--ease-in-out);
-  }
-  .hero[data-field='peony'] .hero__field {
     background: var(--color-peony);
+    transition: background-color var(--dur-md) var(--ease-in-out);
   }
   /* на 60% скролла поле переходит в peony на всю секцию */
   .hero {
@@ -67,10 +64,20 @@ import FlowerFallback from './FlowerFallback.astro';
     padding-top: var(--space-9);
     text-align: center;
   }
+  @media (min-width: 768px) {
+    /* две строки целиком: «студия красоты» не должна переноситься */
+    .hero__title {
+      font-size: min(9.6vw, 176px);
+      white-space: nowrap;
+    }
+  }
 
+  /* маска режет по line-height 0.9 — запас снизу, чтобы не срезать выносные («у», «д», «g») */
   .hero__line-mask {
     display: block;
     overflow: hidden;
+    padding-bottom: 0.15em;
+    margin-bottom: -0.15em;
   }
   .hero__line-mask .line {
     display: block;
@@ -80,12 +87,13 @@ import FlowerFallback from './FlowerFallback.astro';
   .hero__flower {
     position: absolute;
     z-index: 1;
-    top: 30%;
+    /* бокс шире видимого цветка: сам цветок в кадре занимает ~44vw */
+    top: 25%;
     left: 50%;
-    width: 44vw;
-    max-width: 640px;
+    width: 58vw;
+    max-width: 920px;
     aspect-ratio: 1;
-    transform: translate(-50%, -18%);
+    transform: translateX(-50%);
   }
 
   .hero__lead {
@@ -127,8 +135,8 @@ import FlowerFallback from './FlowerFallback.astro';
       z-index: 1;
       top: auto;
       left: auto;
-      width: 92vw;
-      margin: var(--space-6) auto 0;
+      width: 108vw; /* видимый цветок ≈ 92vw */
+      margin: calc(var(--space-9) * -1) -4vw -30vw;
       transform: none;
     }
     .hero__lead,
