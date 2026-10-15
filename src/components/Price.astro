@@ -1,0 +1,421 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import priceData from '../data/price.json';
+import ButtonPrimary from './ButtonPrimary.astro';
+
+interface Item {
+  name: string;
+  price: string;
+  includes?: string;
+  purpose?: string;
+  duration?: string;
+  tiers?: string[];
+}
+interface Group {
+  title: string;
+  note?: string;
+  items: Item[];
+}
+interface Category {
+  id: string;
+  title: string;
+  note?: string;
+  groups: Group[];
+}
+
+const categories = priceData.categories as Category[];
+const tierLabels = priceData.tierLabels as string[];
+
+// Миниатюры вкладок и зеркало-фото направления (TZ.md §5.4)
+const photoPaths: Record<string, string> = {
+  'nogtevoy-servis': '06-works/03_IMG_8084.jpg',
+  'imidzh-studiya': '06-works/05_IMG_8090.JPG',
+  kosmetologiya: '06-works/06_IMG_8093.jpg',
+  'lazernaya-epilyaciya': '02-promo/05__10.jpg',
+  'brow-bar': '04-studio-pushkin/01__DSF7210.jpeg',
+  'massazhnyy-kabinet': '06-works/07_IMG_8099.jpg',
+  'inekcionnaya-kosmetologiya': '06-works/09_IMG_7984.PNG',
+  'rf-lifting': '06-works/08_IMG_7981.PNG',
+};
+const shortTitles: Record<string, string> = {
+  'nogtevoy-servis': 'Ногтевой сервис',
+  'imidzh-studiya': 'Имидж-студия',
+  kosmetologiya: 'Косметология',
+  'lazernaya-epilyaciya': 'Лазерная эпиляция',
+  'brow-bar': 'Brow Bar',
+  'massazhnyy-kabinet': 'Массаж',
+  'inekcionnaya-kosmetologiya': 'Инъекционная косметология',
+  'rf-lifting': 'RF-лифтинг',
+};
+
+const photos = import.meta.glob<{ default: ImageMetadata }>('../../assets/old-site/{06-works,02-promo,04-studio-pushkin}/*', {
+  eager: true,
+});
+const photoFor = (id: string): ImageMetadata | undefined => {
+  const rel = photoPaths[id];
+  const hit = Object.entries(photos).find(([k]) => k.endsWith('/' + rel));
+  return hit?.[1].default;
+};
+
+const hasTiers = (c: Category) => c.groups.some((g) => g.items.some((i) => i.tiers && i.tiers.length === 3));
+const total = categories.reduce((n, c) => n + c.groups.reduce((m, g) => m + g.items.length, 0), 0);
+---
+
+<div class="price" data-price>
+  <div class="grid">
+    <header class="price__head">
+      <h2 class="t-heading-1">цены</h2>
+      <p class="t-small price__sub">
+        Цены в рублях. Актуальность — на дату в конце каждого раздела. Окончательная стоимость — у администратора.
+      </p>
+    </header>
+
+    <div class="price__tabs" role="tablist" aria-label="Направления услуг" data-price-tabs>
+      {categories.map((c, i) => {
+        const photo = photoFor(c.id);
+        return (
+          <button
+            type="button"
+            class="price__tab"
+            role="tab"
+            id={`tab-${c.id}`}
+            aria-controls={`panel-${c.id}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            data-tab={c.id}
+          >
+            {photo && (
+              <span class="price__thumb" aria-hidden="true">
+                <Image src={photo} alt="" width={64} height={64} />
+              </span>
+            )}
+            <span>{shortTitles[c.id] ?? c.title}</span>
+          </button>
+        );
+      })}
+    </div>
+
+    <div class="price__sheetwrap" data-price-wrap>
+      {categories.map((c, i) => {
+        const photo = photoFor(c.id);
+        const tiered = hasTiers(c);
+        return (
+          <section
+            class="price__panel"
+            role="tabpanel"
+            id={`panel-${c.id}`}
+            aria-labelledby={`tab-${c.id}`}
+            data-panel={c.id}
+            hidden={i !== 0}
+          >
+            <div class="price__sheet">
+              <h3 class="t-heading-2 price__panel-title">{c.title}</h3>
+
+              {tiered && (
+                <div class="price__tiers" role="group" aria-label="Уровень мастера">
+                  <p class="t-small price__tiers-label">Уровень мастера — по опыту и квалификации</p>
+                  <div class="price__tier-switch" data-tier-switch>
+                    {tierLabels.map((label, ti) => (
+                      <button type="button" class="price__tier" data-tier={ti} aria-pressed={ti === 0 ? 'true' : 'false'}>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {c.groups.map((g) => (
+                <div class="price__group" data-row-group>
+                  <h4 class="t-heading-2 price__group-title">{g.title}</h4>
+                  {g.note && <p class="t-small price__note">{g.note}</p>}
+                  <dl class="price__list">
+                    {g.items.map((item) => {
+                      const detail = item.includes || item.purpose || '';
+                      return (
+                        <div class="price__row" data-row>
+                          <dt class="price__name t-body">
+                            {item.name}
+                            {item.duration && <span class="price__meta t-small"> · {item.duration}</span>}
+                          </dt>
+                          <dd class="price__value t-price" data-tiers={item.tiers && item.tiers.length === 3 ? item.tiers.join('|') : undefined}>
+                            {item.price}
+                          </dd>
+                          {detail && (
+                            <dd class="price__more">
+                              <details>
+                                <summary class="t-small">подробнее</summary>
+                                <p class="t-small">{detail}</p>
+                              </details>
+                            </dd>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </dl>
+                </div>
+              ))}
+
+              <footer class="price__foot">
+                {c.note && <p class="t-small price__date">{c.note}</p>}
+                <ButtonPrimary
+                  compact
+                  data-open-booking
+                  data-promo-label={`Запись: ${shortTitles[c.id] ?? c.title}`}
+                >
+                  Записаться на {(shortTitles[c.id] ?? c.title).toLowerCase()}
+                </ButtonPrimary>
+              </footer>
+            </div>
+
+            {photo && (
+              <aside class="price__mirror" aria-hidden="true">
+                <div class="price__mirror-photo">
+                  <Image src={photo} alt="" width={480} height={480} />
+                </div>
+                <p class="t-small">{shortTitles[c.id] ?? c.title}</p>
+              </aside>
+            )}
+          </section>
+        );
+      })}
+    </div>
+    <p class="price__count" data-price-total hidden>{total}</p>
+  </div>
+</div>
+
+<style>
+  .price {
+    background: var(--color-peony);
+    padding-block: var(--space-section);
+  }
+  .price__head {
+    grid-column: 1 / -1;
+    margin-bottom: var(--space-6);
+  }
+  .price__sub {
+    margin-top: var(--space-3);
+    color: var(--color-plum);
+    max-width: 44em;
+  }
+
+  .price__tabs {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: var(--space-2);
+    overflow-x: auto;
+    padding-bottom: var(--space-3);
+    scrollbar-width: thin;
+  }
+  .price__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: none;
+    height: var(--chip-height);
+    padding: 0 var(--space-4) 0 var(--space-2);
+    border: 0;
+    border-radius: var(--radius-full);
+    background: var(--color-pearl-2);
+    color: var(--color-plum);
+    font-family: var(--font-text);
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 160ms var(--ease-out), color 160ms var(--ease-out);
+  }
+  .price__tab[aria-selected='true'] {
+    background: var(--color-plum);
+    color: var(--color-pearl);
+  }
+  .price__thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex: none;
+  }
+  .price__thumb :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .price__sheetwrap {
+    grid-column: 1 / -1;
+    margin-top: var(--space-5);
+    overflow: hidden;
+  }
+  .price__panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+  .price__panel[hidden] {
+    display: none;
+  }
+  .price__sheet {
+    background: var(--color-pearl);
+    border-radius: 32px;
+    padding: var(--space-6) 24px;
+  }
+  .price__panel-title {
+    margin: 0 0 var(--space-5);
+  }
+
+  .price__tiers {
+    margin-bottom: var(--space-6);
+  }
+  .price__tiers-label {
+    color: var(--color-plum-2);
+    margin-bottom: var(--space-2);
+  }
+  .price__tier-switch {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 2px;
+    background: var(--color-pearl-2);
+    border-radius: var(--radius-full);
+  }
+  .price__tier {
+    height: 40px;
+    padding: 0 var(--space-4);
+    border: 0;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--color-plum);
+    font-family: var(--font-text);
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .price__tier[aria-pressed='true'] {
+    background: var(--color-peony);
+  }
+
+  .price__group {
+    margin-top: var(--space-7);
+  }
+  .price__group:first-of-type {
+    margin-top: 0;
+  }
+  .price__group-title {
+    margin: 0;
+  }
+  .price__note {
+    margin-top: var(--space-2);
+    color: var(--color-plum-2);
+  }
+  .price__list {
+    margin: var(--space-4) 0 0;
+  }
+  .price__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: var(--space-5);
+    row-gap: 2px;
+    padding-block: var(--space-3);
+  }
+  .price__name {
+    margin: 0;
+    color: var(--color-plum);
+  }
+  .price__meta {
+    color: var(--color-plum-2);
+  }
+  .price__value {
+    margin: 0;
+    text-align: right;
+    color: var(--color-plum);
+  }
+  .price__value :global(.price__other) {
+    display: block;
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--color-plum-2);
+  }
+  .price__more {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+  .price__more summary {
+    cursor: pointer;
+    color: var(--color-plum-2);
+    width: max-content;
+  }
+  .price__more p {
+    margin: var(--space-2) 0 0;
+    color: var(--color-plum-2);
+    max-width: 52em;
+  }
+
+  .price__foot {
+    margin-top: var(--space-7);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+  .price__date {
+    color: var(--color-plum-2);
+    max-width: 42em;
+  }
+
+  .price__mirror {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .price__sheet {
+      padding: var(--space-8) var(--space-8);
+    }
+  }
+  @media (min-width: 1024px) {
+    .price__panel {
+      grid-template-columns: minmax(0, 8fr) minmax(0, 2fr);
+      gap: var(--space-6);
+      padding-left: calc(100% / 12 * 1);
+    }
+    .price__sheet {
+      padding: 64px;
+    }
+    .price__mirror {
+      display: block;
+      position: sticky;
+      top: calc(var(--nav-height) + var(--space-5));
+      align-self: start;
+      color: var(--color-plum);
+    }
+    .price__mirror-photo {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+    .price__mirror-photo :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .price__mirror p {
+      margin-top: var(--space-3);
+      text-align: center;
+    }
+  }
+  @media (max-width: 767px) {
+    .price__sheetwrap {
+      margin-inline: calc(var(--grid-margin) * -1 + 10px);
+    }
+    .price__sheet {
+      padding: 24px;
+    }
+  }
+</style>
+
+<script>
+  import { initPrice } from '../scripts/price';
+  initPrice();
+</script>

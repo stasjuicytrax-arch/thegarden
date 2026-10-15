@@ -7,6 +7,7 @@ import Hero from '../components/Hero.astro';
 import StickyBookCta from '../components/StickyBookCta.astro';
 import Intro from '../components/Intro.astro';
 import Sale from '../components/Sale.astro';
+import Price from '../components/Price.astro';
 import '../styles/tokens.css';
 import '../styles/typography.css';
 import '../styles/base.css';
@@ -47,7 +48,9 @@ const description =
         <Sale />
       </section>
 
-      <section id="price" aria-label="Цены"></section>
+      <section id="price" aria-label="Цены">
+        <Price />
+      </section>
 
       <section id="studios" aria-label="Студии"></section>
 
