@@ -1,0 +1,173 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import ButtonPrimary from './ButtonPrimary.astro';
+
+interface PromoDates {
+  pushkin?: number[];
+  frunzenskaya?: number[];
+}
+interface Promo {
+  id: string;
+  discount: string;
+  title: string;
+  note?: string;
+  section: string;
+  dates: PromoDates | 'all-month';
+}
+
+interface Props {
+  promo: Promo;
+  image: { src: ImageMetadata; alt: string; position: string };
+  index: number;
+}
+const { promo, image, index } = Astro.props;
+
+const isAllMonth = promo.dates === 'all-month';
+const pushkinDates = !isAllMonth ? (promo.dates as PromoDates).pushkin : undefined;
+const frunzenskayaDates = !isAllMonth ? (promo.dates as PromoDates).frunzenskaya : undefined;
+
+const dateParts: string[] = [];
+if (isAllMonth) dateParts.push('весь месяц');
+if (pushkinDates) dateParts.push(`Пушкин: ${pushkinDates.join(', ')}`);
+if (frunzenskayaDates) dateParts.push(`СПб: ${frunzenskayaDates.join(', ')}`);
+const dateText = dateParts.join(' · ');
+
+const discountMatch = promo.discount.match(/(\D*)(\d+)(\D*)/);
+const discountPrefix = discountMatch?.[1] ?? '';
+const discountValue = discountMatch?.[2] ?? '0';
+const discountSuffix = discountMatch?.[3] ?? '';
+---
+
+<article
+  class="promo-card"
+  data-promo-card
+  data-promo-id={promo.id}
+  data-all-month={isAllMonth ? '1' : undefined}
+  data-days-pushkin={pushkinDates ? pushkinDates.join(',') : undefined}
+  data-days-frunzenskaya={frunzenskayaDates ? frunzenskayaDates.join(',') : undefined}
+  style={`--i:${index}`}
+>
+  <div class="promo-card__photo" data-reveal-mirror>
+    <Image src={image.src} alt={image.alt} width={480} height={600} style={`object-position:${image.position}`} />
+  </div>
+
+  <div class="promo-card__content">
+    <p
+      class="promo-card__discount t-display"
+      data-promo-discount
+      data-discount-prefix={discountPrefix}
+      data-discount-value={discountValue}
+      data-discount-suffix={discountSuffix}
+    >
+      {promo.discount}
+    </p>
+    <h3 class="promo-card__title t-heading-2">{promo.title}</h3>
+    {promo.note && <p class="promo-card__note t-small">{promo.note}</p>}
+    <p class="promo-card__section t-small">{promo.section}</p>
+    <p class="promo-card__dates t-small" data-promo-dates-label>{dateText}</p>
+    <p class="promo-card__dim-note t-small" data-promo-dim-note hidden></p>
+
+    <ButtonPrimary
+      class="promo-card__cta"
+      compact
+      data-open-booking
+      data-promo-label={promo.title}
+      data-promo-dates={dateText}
+    >
+      Записаться на акцию
+    </ButtonPrimary>
+  </div>
+</article>
+
+<style>
+  .promo-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    padding-block: var(--space-7);
+    transition: opacity var(--dur-sm) var(--ease-out);
+  }
+  .promo-card:not(:first-child) {
+    border-top: none;
+  }
+  .promo-card[data-dimmed='true'] {
+    opacity: 0.45;
+  }
+  .promo-card[hidden] {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .promo-card {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-8);
+    }
+    .promo-card:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+  }
+
+  .promo-card__photo {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 4 / 5;
+    border-radius: 50% / 40%;
+    overflow: hidden;
+    clip-path: circle(75% at 50% 50%);
+  }
+  @media (min-width: 1024px) {
+    .promo-card__photo {
+      width: 40%;
+    }
+  }
+  .promo-card__photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .promo-card__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .promo-card__discount {
+    color: var(--color-plum);
+    font-size: clamp(48px, 7vw, 96px);
+  }
+
+  .promo-card__title {
+    margin-top: var(--space-2);
+  }
+
+  .promo-card__note {
+    margin-top: var(--space-2);
+    color: var(--color-plum-2);
+  }
+
+  .promo-card__section {
+    margin-top: var(--space-1);
+    color: var(--color-plum-2);
+  }
+
+  .promo-card__dates {
+    margin-top: var(--space-4);
+    color: var(--color-leaf);
+  }
+
+  .promo-card__dim-note {
+    margin-top: var(--space-2);
+    color: var(--color-plum-2);
+  }
+  .promo-card__dim-note:not([hidden]) {
+    display: block;
+  }
+
+  .promo-card__cta {
+    margin-top: var(--space-5);
+  }
+</style>
