@@ -54,7 +54,7 @@ const description =
         <Sale />
       </section>
 
-      <section id="price" aria-label="Цены">
+      <section id="price" aria-label="Цены" data-field="peony">
         <Price />
       </section>
 
@@ -66,7 +66,7 @@ const description =
         <Works />
       </section>
 
-      <section id="loyalty" aria-label="Программа лояльности">
+      <section id="loyalty" aria-label="Программа лояльности" data-field="peony">
         <Loyalty />
       </section>
 
@@ -79,17 +79,19 @@ const description =
       </section>
     </main>
 
-    <footer id="footer">
+    <footer id="footer" data-field="peony">
       <Footer />
     </footer>
 
     <script>
       import { initLenis, initAnchorScrolling } from '../scripts/lenis';
       import { registerMotion } from '../scripts/motion';
+      import { initPageMotion } from '../scripts/reveals';
 
       registerMotion();
       initLenis();
       initAnchorScrolling();
+      initPageMotion();
     </script>
   </body>
 </html>

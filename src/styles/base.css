@@ -149,3 +149,17 @@ dialog:not([open]) {
   white-space: nowrap;
   border: 0;
 }
+
+/* Поле страницы: pearl ↔ peony (DESIGN-SYSTEM.md §7.6), переключается reveals.ts */
+body {
+  background-color: var(--color-pearl);
+  transition: background-color var(--dur-md, 640ms) var(--ease-in-out);
+}
+body[data-field='peony'] {
+  background-color: var(--color-peony);
+}
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
+}
