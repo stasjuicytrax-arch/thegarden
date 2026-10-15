@@ -1,4 +1,4 @@
-// Скриншоты hero при прогрессе раскрытия 0 / 0.5 / 1: node scripts/shot-bloom.mjs <out-dir> [url]
+// Скриншоты hero при прогрессе раскрытия 0 / 0.5 / 1: node scripts/shot-hero-scroll.mjs <out-dir> [url]
 import { chromium } from 'playwright-core';
 import { readdirSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -15,7 +15,7 @@ const browser = await chromium.launch({
   args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'],
 });
 
-for (const [name, w, h, pinFrac] of [['desktop', 1440, 900, 1.2], ['mobile', 390, 844, 0.8]]) {
+for (const [name, w, h, pinFrac] of [['desktop', 1440, 900, 1.0], ['mobile', 390, 844, 1.0]]) {
   const page = await browser.newPage({ viewport: { width: w, height: h } });
   page.on('console', (m) => m.type() === 'error' && console.log(name, 'console error:', m.text()));
   await page.goto(url, { waitUntil: 'networkidle' });
@@ -29,7 +29,7 @@ for (const [name, w, h, pinFrac] of [['desktop', 1440, 900, 1.2], ['mobile', 390
       return [Math.round(r.top), Math.round(r.height), window.scrollY];
     });
     console.log(name, 'progress', prog, 'hero top/h/scrollY', hero.join('/'));
-    await page.screenshot({ path: join(out, `bloom-${name}-${prog}.png`) });
+    await page.screenshot({ path: join(out, `hero-scroll-${name}-${prog}.png`) });
   }
   await page.close();
 }

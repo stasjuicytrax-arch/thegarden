@@ -1,22 +1,45 @@
 ---
+import { Picture } from 'astro:assets';
 import StudioSwitch from './StudioSwitch.astro';
 import ButtonPrimary from './ButtonPrimary.astro';
-import FlowerFallback from './FlowerFallback.astro';
+import pushkinPhoto from '../../assets/old-site/04-studio-pushkin/02__DSF6680.jpeg';
+import frunzenskayaPhoto from '../../assets/old-site/05-studio-frunzenskaya/03__DSF3816.jpeg';
+
+// «Зеркало-диафрагма» (TZ.md §5.1): в круге peony — фото интерьера выбранной студии;
+// на скролле круг раскрывается до полного экрана.
+const photos = [
+  { id: 'pushkin', src: pushkinPhoto },
+  { id: 'frunzenskaya', src: frunzenskayaPhoto },
+];
 ---
 
 <div class="hero" data-hero>
   <div class="hero__field" aria-hidden="true"></div>
 
-  <h1 class="hero__title t-display">
+  <div class="hero__disc" data-hero-disc aria-hidden="true">
+    <div class="hero__frame" data-hero-frame>
+      {photos.map((photo, i) => (
+        <div class="hero__photo" data-hero-photo={photo.id} data-active={i === 0 ? '' : undefined}>
+          <Picture
+            src={photo.src}
+            alt=""
+            formats={['avif', 'webp']}
+            widths={[768, 1280, 1920]}
+            sizes="100vw"
+            loading={i === 0 ? 'eager' : 'lazy'}
+            decoding="async"
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <h1 class="hero__title t-display" data-hero-title>
     <span class="hero__line-mask"><span class="line" data-hero-line>студия красоты</span></span>
     <span class="hero__line-mask"><span class="line" data-hero-line>the garden</span></span>
   </h1>
 
-  <div class="hero__flower" data-hero-flower aria-hidden="true">
-    <FlowerFallback />
-  </div>
-
-  <p class="hero__lead t-body" data-hero-fade>
+  <p class="hero__lead t-body" data-hero-fade data-hero-lead>
     Бьюти-услуги с любовью и заботой.<br />
     Пушкин и Санкт-Петербург, ежедневно 10:00–21:00.
   </p>
@@ -29,16 +52,20 @@ import FlowerFallback from './FlowerFallback.astro';
 
 <style>
   .hero {
+    --cx: 50%;
+    --cy: 58%;
     position: relative;
     min-height: calc(100svh - var(--nav-height));
     overflow: hidden;
     display: grid;
+    background: var(--color-pearl);
   }
 
+  /* плоский круг peony ~60vw; фото в нём чуть меньше, чтобы по краю оставалось кольцо поля */
   .hero__field {
     position: absolute;
-    top: 58%;
-    left: 50%;
+    top: var(--cy);
+    left: var(--cx);
     width: 60vw;
     height: 60vw;
     max-width: 900px;
@@ -46,15 +73,40 @@ import FlowerFallback from './FlowerFallback.astro';
     transform: translate(-50%, -50%);
     border-radius: 50%;
     background: var(--color-peony);
-    transition: background-color var(--dur-md) var(--ease-in-out);
   }
-  /* на 60% скролла поле переходит в peony на всю секцию */
-  .hero {
-    background-color: transparent;
-    transition: background-color var(--dur-md) var(--ease-in-out);
+
+  /* диафрагма: радиус --r задаёт hero.ts (px); до JS — CSS-значение */
+  .hero__disc {
+    --r: min(25.8vw, 387px);
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    clip-path: circle(var(--r) at var(--cx) var(--cy));
   }
-  .hero[data-field='peony'] {
-    background-color: var(--color-peony);
+  .hero__frame {
+    position: absolute;
+    inset: 0;
+  }
+  .hero__photo {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 600ms var(--ease-in-out);
+    transform: scale(var(--photo-scale, 1));
+    transform-origin: var(--cx) var(--cy);
+  }
+  .hero__photo[data-active] {
+    opacity: 1;
+  }
+  .hero__photo :global(picture),
+  .hero__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .hero__photo :global(img) {
+    object-fit: cover;
+    object-position: 50% 50%;
   }
 
   .hero__title {
@@ -84,18 +136,6 @@ import FlowerFallback from './FlowerFallback.astro';
     transform: translateY(0);
   }
 
-  .hero__flower {
-    position: absolute;
-    z-index: 1;
-    /* бокс шире видимого цветка: сам цветок в кадре занимает ~44vw */
-    top: 10%;
-    left: 50%;
-    width: 58vw;
-    max-width: 920px;
-    aspect-ratio: 1;
-    transform: translateX(-50%);
-  }
-
   .hero__lead {
     position: absolute;
     z-index: 2;
@@ -117,36 +157,26 @@ import FlowerFallback from './FlowerFallback.astro';
 
   @media (max-width: 767px) {
     .hero {
+      --cy: 52%;
       display: flex;
       flex-direction: column;
-      min-height: auto;
+      justify-content: space-between;
       padding-bottom: var(--space-9);
     }
     .hero__field {
-      top: 46%;
       width: 110vw;
       height: 110vw;
+    }
+    .hero__disc {
+      --r: 47vw;
     }
     .hero__title {
       padding-top: var(--space-7);
     }
-    .hero__flower {
-      position: relative;
-      z-index: 1;
-      top: auto;
-      left: auto;
-      width: 108vw; /* видимый цветок ≈ 92vw */
-      margin: calc(var(--space-9) * -1) -4vw -20vw;
-      transform: none;
-    }
     .hero__lead,
     .hero__actions {
       position: relative;
-      z-index: 2;
       inset: auto;
-      left: auto;
-      right: auto;
-      bottom: auto;
       max-width: none;
       padding-inline: var(--grid-margin);
     }
@@ -164,7 +194,7 @@ import FlowerFallback from './FlowerFallback.astro';
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero__field {
+    .hero__photo {
       transition: none;
     }
   }
