@@ -85,7 +85,9 @@ export function initSale(): void {
       const has = marked.has(d);
       b.setAttribute('data-has', String(has));
       b.setAttribute('aria-pressed', String(d === selectedDay));
-      b.setAttribute('aria-label', has ? `${d}, есть акции` : String(d));
+      const wd = b.querySelector('.calendar__wd')?.textContent?.trim();
+      const label = wd ? `${wd} ${d}` : String(d);
+      b.setAttribute('aria-label', has ? `${label}, есть акции` : label);
     });
 
     const state = animate && !reduced ? Flip.getState(cards) : null;

@@ -27,6 +27,7 @@ const photos = [
             widths={[768, 1280, 1920]}
             sizes="100vw"
             loading={i === 0 ? 'eager' : 'lazy'}
+            fetchpriority={i === 0 ? 'high' : 'low'}
             decoding="async"
           />
         </div>

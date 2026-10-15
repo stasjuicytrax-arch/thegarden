@@ -16,7 +16,8 @@ function runLoadSequence(hero: HTMLElement): void {
   });
 
   if (frame) {
-    tl.from(frame, { opacity: 0, y: 28, duration: 1.1, ease: 'expo.out' }, 0.3);
+    // без opacity: фото в круге должно быть видно сразу (LCP), двигаем только положение
+    tl.from(frame, { y: 28, duration: 1.1, ease: 'expo.out' }, 0.3);
   }
 
   tl.from(

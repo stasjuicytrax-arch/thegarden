@@ -7,4 +7,6 @@ export default defineConfig({
   site: 'https://stasjuicytrax-arch.github.io',
   base: '/thegarden',
   trailingSlash: 'never',
+  // CSS целиком в HTML: убирает блокирующий запрос стилей на первом экране
+  build: { inlineStylesheets: 'always' },
 });

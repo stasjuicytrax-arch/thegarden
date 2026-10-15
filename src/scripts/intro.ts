@@ -4,7 +4,7 @@ function animateStatement(statement: HTMLElement): void {
   const pieces = Array.from(statement.querySelectorAll<HTMLElement>('[data-intro-piece]'));
   const circles = Array.from(statement.querySelectorAll<HTMLElement>('[data-reveal-circle]'));
 
-  const splits = pieces.map((piece) => new SplitText(piece, { type: 'words' }));
+  const splits = pieces.map((piece) => new SplitText(piece, { type: 'words', aria: 'none' }));
 
   const tl = gsap.timeline({
     scrollTrigger: {
