@@ -146,8 +146,10 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
   flower.position.y = -0.3;
   scene.add(flower);
 
+  const fallbackEl = host.querySelector<HTMLElement>('.flower-fallback');
   host.appendChild(canvas);
-  host.querySelector<HTMLElement>('.flower-fallback')?.style.setProperty('visibility', 'hidden');
+  fallbackEl?.style.setProperty('visibility', 'hidden');
+  let dead = false;
 
   const resize = () => {
     const r = host.getBoundingClientRect();
@@ -155,7 +157,8 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
     camera.aspect = r.width / Math.max(r.height, 1);
     camera.updateProjectionMatrix();
   };
-  new ResizeObserver(resize).observe(host);
+  const ro = new ResizeObserver(resize);
+  ro.observe(host);
   resize();
 
   // раскрытие 1800ms изнутри наружу, затем «дыхание» ±1.5° с периодом 6 с
@@ -172,7 +175,7 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
   let visible = true;
   let running = false;
   const frame = (now: number) => {
-    if (!visible || document.hidden) {
+    if (dead || !visible || document.hidden) {
       running = false;
       return;
     }
@@ -183,21 +186,22 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
     requestAnimationFrame(frame);
   };
   const kick = () => {
-    if (!running && visible && !document.hidden) {
+    if (!dead && !running && visible && !document.hidden) {
       running = true;
       requestAnimationFrame(frame);
     }
   };
-  new IntersectionObserver(([e]) => {
+  const io = new IntersectionObserver(([e]) => {
     visible = e.isIntersecting;
     kick();
-  }).observe(hero);
+  });
+  io.observe(hero);
   document.addEventListener('visibilitychange', kick);
   kick();
 
   // смена студии: кроссфейд env 800ms
   let fade = 0;
-  onStudioChange((id) => {
+  const unsubscribe = onStudioChange((id) => {
     const to: StudioId = id ?? 'pushkin';
     if (to === shown) return;
     const from = shown;
@@ -210,5 +214,31 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
       if (t < 1) fade = requestAnimationFrame(step);
     };
     fade = requestAnimationFrame(step);
+  });
+
+  // потеря контекста: возвращаем fallback, при восстановлении пересоздаём сцену
+  const teardown = () => {
+    dead = true;
+    cancelAnimationFrame(fade);
+    ro.disconnect();
+    io.disconnect();
+    document.removeEventListener('visibilitychange', kick);
+    unsubscribe();
+    envRT?.dispose();
+    envTex.dispose();
+    pmrem.dispose();
+    renderer.dispose();
+    canvas.remove();
+    fallbackEl?.style.removeProperty('visibility');
+  };
+  canvas.addEventListener('webglcontextlost', (e) => {
+    e.preventDefault();
+    dead = true;
+    canvas.style.display = 'none';
+    fallbackEl?.style.removeProperty('visibility');
+  });
+  canvas.addEventListener('webglcontextrestored', () => {
+    teardown();
+    void start(host, hero).catch(() => {});
   });
 }
