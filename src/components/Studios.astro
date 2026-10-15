@@ -27,7 +27,12 @@ const bookLabel: Record<string, string> = {
   pushkin: 'Записаться в Пушкине',
   frunzenskaya: 'Записаться на Фрунзенской',
 };
-const studios = site.studios;
+// первым в карусели — лучший кадр интерьера (тот же, что в hero), остальные по порядку
+const studios = site.studios.map((st) => {
+  const first = st.photos.indexOf(st.envMap);
+  if (first <= 0) return st;
+  return { ...st, photos: [st.photos[first], ...st.photos.filter((_, i) => i !== first)] };
+});
 ---
 
 <div class="studios" data-studios>
