@@ -2,7 +2,7 @@
 // three.js грузится динамически после первого кадра; при отсутствии WebGL2 и т.п. остаётся SVG-fallback.
 import type { WebGLRenderTarget } from 'three';
 import { getStudio, onStudioChange, type StudioId } from './studio-state';
-import { prefersReducedMotion } from './motion';
+import { gsap, prefersReducedMotion } from './motion';
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 const ENV_SIZE = { w: 2048, h: 1024 };
@@ -111,8 +111,29 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
     clearcoatRoughness: 0.05,
     side: THREE.DoubleSide,
   });
+  // Раскрытие привязано к скроллу: uBloom 0 (бутон) → 1 (исходная форма).
+  // Позиции в glb квантованы (int16, normalized): в шейдере радиус цветка ≈ 1, y ≈ ±0.22.
+  // Внутренние лепестки раскрываются раньше внешних (сдвиг по радиусу).
+  const bloom = { value: 0 };
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.uBloom = bloom;
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nuniform float uBloom;')
+      .replace(
+        '#include <begin_vertex>',
+        `#include <begin_vertex>
+        float bloomR = length(transformed.xz);
+        float bloomK = smoothstep(0.0, 1.0, clamp(uBloom * 1.5 - bloomR * 0.5, 0.0, 1.0));
+        transformed.xz *= mix(0.25, 1.0, bloomK);
+        transformed.y += bloomR * 0.9 * (1.0 - bloomK);`
+      );
+  };
   model.traverse((o) => {
-    if ((o as import('three').Mesh).isMesh) (o as import('three').Mesh).material = material;
+    const m = o as import('three').Mesh;
+    if (m.isMesh) {
+      m.material = material;
+      m.frustumCulled = false;
+    }
   });
   const sun = new THREE.DirectionalLight(0xffffff, 1.4);
   sun.position.set(2, 4, 3);
@@ -124,6 +145,22 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
   flower.add(model);
   flower.position.y = -0.3;
   scene.add(flower);
+
+  // Пин hero: пока идёт раскрытие, заголовок и кнопки стоят на месте; затем секция отпускается.
+  // Без WebGL / при reduced-motion эта функция не вызывается вовсе (см. canRunWebGL).
+  const bloomState = { p: 0 };
+  const bloomTween = gsap.to(bloomState, {
+    p: 1,
+    ease: 'none',
+    scrollTrigger: {
+      trigger: hero,
+      start: 'top top',
+      end: mobile ? '+=80%' : '+=120%',
+      scrub: 0.8,
+      pin: true,
+      anticipatePin: 1,
+    },
+  });
 
   const fallbackEl = host.querySelector<HTMLElement>('.flower-fallback');
   host.appendChild(canvas);
@@ -150,10 +187,8 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
   ro.observe(host);
   resize();
 
-  // раскрытие 1800ms: масштаб 0.6 → 1 и доворот, затем «дыхание» ±1.5% с периодом 6 с
-  const t0 = performance.now() + 300;
-  const OPEN = 1.8;
-  const easeOut = (x: number) => 1 - Math.pow(1 - x, 3);
+  // появление бутоном при загрузке; раскрытие — только от скролла (bloomState.p)
+  const t0 = performance.now();
 
   let visible = true;
   let running = false;
@@ -163,10 +198,11 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
       return;
     }
     const tt = Math.max((now - t0) / 1000, 0);
-    const o = easeOut(Math.min(tt / OPEN, 1));
-    const breathe = o >= 1 ? Math.sin(((tt - OPEN) / 6) * Math.PI * 2) * 0.015 : 0;
-    model.scale.setScalar(0.6 + 0.4 * o + breathe);
-    model.rotation.y = (1 - o) * ((-70 * Math.PI) / 180);
+    const b = bloomState.p;
+    bloom.value = b;
+    const breathe = Math.sin((tt / 6) * Math.PI * 2) * 0.02; // ±2%
+    model.scale.setScalar((0.85 + 0.15 * b) * (1 + breathe));
+    model.rotation.y = b * ((30 * Math.PI) / 180);
     // скролл первого экрана: поворот до 40° и опускание на 10vh
     const r = hero.getBoundingClientRect();
     const p = Math.min(Math.max(-r.top / Math.max(r.height, 1), 0), 1);
@@ -231,6 +267,8 @@ async function start(host: HTMLElement, hero: HTMLElement): Promise<void> {
     unsubscribe();
     window.removeEventListener('pointermove', onPointer);
     window.removeEventListener('pagehide', teardown);
+    bloomTween.scrollTrigger?.kill(true);
+    bloomTween.kill();
     flower.traverse((o) => {
       if ((o as import('three').Mesh).isMesh) (o as import('three').Mesh).geometry.dispose();
     });
